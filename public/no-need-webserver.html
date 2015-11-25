@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en" ng-app="no-need-server">
+<head>
+    <title>Just open this page with a web browser</title>
+    <style type="text/css">
+        div.row { display: table-row; }
+        div.cell { display: table-cell; padding: 0.5em 1em; }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
+    <script type="text/javascript">
+        "use strict";
+        function People(firstName, lastName, age) {
+            this.firstName = firstName;
+            this.lastName  = lastName;
+            this.age       = age;
+        }
+        People.prototype.clone = function() {
+            return new People(this.firstName, this.lastName, this.age);
+        };
+
+        angular.module("no-need-server", []);
+
+        angular.module("no-need-server").controller("personController", PersonController);
+        function PersonController() {
+            this.currentPerson = { index: null, person: new People(null, null, null) };
+            this.people = [
+                    new People("Hannah", "T", 33),
+                    new People("Van", "M", 38)
+            ];
+        }
+        PersonController.prototype.addPerson = function() {
+            this.people.push(this.currentPerson.person);
+            this.currentPerson.index = null;
+            this.currentPerson.person = new People(null, null, null);
+        };
+        PersonController.prototype.edit = function(index) {
+            this.currentPerson.index = index;
+            this.currentPerson.person = this.people[index].clone();
+        };
+        PersonController.prototype.delete = function(index) {
+            this.people.splice(index, 1);
+        };
+        PersonController.prototype.modify = function() {
+            this.people[this.currentPerson.index] = this.currentPerson.person;
+            this.currentPerson.index  = null;
+            this.currentPerson.person = null;
+        };
+    </script>
+</head>
+<body>
+<div ng-controller="personController as pc">
+    <div style="display: table;">
+        <div class="row">
+            <div class="cell">First Name:</div>
+            <div class="cell"><input type="text" ng-model="pc.currentPerson.person.firstName"/></div>
+        </div>
+        <div class="row">
+            <div class="cell">Last Name:</div>
+            <div class="cell"><input type="text" ng-model="pc.currentPerson.person.lastName"/></div>
+        </div>
+        <div class="row">
+            <div class="cell">Age:</div>
+            <div class="cell"><input type="text" ng-model="pc.currentPerson.person.age"/></div>
+        </div>
+    </div>
+    <button ng-click="pc.addPerson()" ng-show="pc.currentPerson.index == null">Add</button>
+    <button ng-click="pc.modify()" ng-show="pc.currentPerson.index != null">Modify</button>
+    <div style="display: table;">
+        <div class="row">
+            <div class="cell">Name</div>
+            <div class="cell">Age</div>
+        </div>
+        <div class="row" ng-repeat="person in pc.people">
+            <div class="cell">{{person.firstName}} {{person.lastName}}</div>
+            <div class="cell">{{person.age}}</div>
+            <div class="cell">
+                <button ng-click="pc.edit($index)">Edit</button> <button ng-click="pc.delete($index)">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

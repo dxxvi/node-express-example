@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" ng-app="diveLog">
+<head>
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <script src="/node_modules/angular/angular.min.js"></script>
+    <script type="text/javascript">
+        'use strict';
+        var index = 0;
+        var dives = [
+            { site: 'Abu', location: 'Egypt', depth: 72, time: 44 },
+            { site: 'Ponte', location: 'Mauritius', depth: 55, time: 28 },
+            { site: 'Molnar', location: 'Hungary', depth: 97, time: 52 }
+        ];
+
+        angular.module("diveLog", []);
+        angular.module("diveLog").controller("diveLogController", ["$scope", DiveLogController]);
+        function DiveLogController($scope) {
+            $scope.dives = [];
+            $scope.addDive = function () {
+                if ($scope.enableAdd()) {
+                    $scope.dives.push(dives[index++]);
+                }
+            };
+
+            $scope.clearDives = function () {
+                $scope.dives = [];
+                index = 0;
+            };
+
+            $scope.enableAdd = function () {
+                console.log("index = " + index + " - this.dives.length = " + $scope.dives.length);
+                return index < dives.length;
+            };
+        }
+    </script>
+</head>
+<body>
+<div class="container-fluid" ng-controller="diveLogController">
+    <p>My latest Dives (AngularJS)</p>
+    <div class="row">
+        <div class="col-xs-6">
+            <button class="btn btn-primary btn-sm" ng-click="addDive()" ng-disabled="!enableAdd()">
+                Add new dive
+            </button>
+            <button class="btn btn-danger btn-sm" ng-click="clearDives()">Clear dives</button>
+        </div>
+        <div class="col-xs-3 col-xs-offset-3">
+            <input class="form-control input-sm" placeholder="Search" ng-model="searchKey"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-4" ng-repeat="dive in dives | filter:searchKey">
+            <p>{{dive.site}}</p>
+            <p>{{dive.location}}</p>
+            <p>{{dive.depth}} feet | {{dive.time}} min</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
