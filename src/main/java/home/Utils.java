@@ -5,15 +5,8 @@ import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
-import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -110,7 +103,7 @@ public abstract class Utils {
    * Remove the width, height attributes of img
    */
   public static void addStuff(Document document, String title, String css, String baseUrl) {
-    document.head().parent().attr("style", "color: #333; font-size: 16px");
+    document.head().parent().attr("style", "color: #333; font: 16px/1.44 'Noto Serif'");
     document.charset(UTF_8);
     document
         .head()

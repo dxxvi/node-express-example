@@ -5,14 +5,14 @@
   <artifactId>books</artifactId>
   <version>1</version>
   <properties>
+    <bouncycastle.version>1.78.1</bouncycastle.version>
     <java.version>22</java.version>
     <jsoup.version>1.17.2</jsoup.version>
     <junit.version>5.10.2</junit.version>
     <logback.version>1.5.6</logback.version>
+    <lz4.version>1.8.0</lz4.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <lz4.version>1.8.0</lz4.version>
-    <bouncycastle.version>1.78.1</bouncycastle.version>
   </properties>
 
   <dependencies>
@@ -31,7 +31,7 @@
       <artifactId>lz4-java</artifactId>
       <version>${lz4.version}</version>
     </dependency>
-<!--
+    <!--
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk18on</artifactId>

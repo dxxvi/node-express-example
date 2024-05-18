@@ -4,26 +4,14 @@ import static java.nio.file.StandardOpenOption.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import home.Utils;
-import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.Base64;
 import java.util.stream.Stream;
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import net.jpountz.lz4.LZ4Compressor;
 import net.jpountz.lz4.LZ4Factory;
-import net.jpountz.lz4.LZ4FrameInputStream;
-import net.jpountz.lz4.LZ4FrameOutputStream;
 import net.jpountz.lz4.LZ4SafeDecompressor;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,7 +69,8 @@ class Lz4Test {
       for (Path path : stream.filter(p -> p.toFile().getPath().endsWith(".txt")).toList()) {
         byte[] compressedBytes = compressor.compress(Files.readAllBytes(path));
         byte[] encryptedBytes = aesEncryptor.doFinal(compressedBytes);
-        Files.write(Path.of(path.toFile().getPath() + ".bin"), encryptedBytes, CREATE, TRUNCATE_EXISTING);
+        Files.write(
+            Path.of(path.toFile().getPath() + ".bin"), encryptedBytes, CREATE, TRUNCATE_EXISTING);
       }
     }
   }
@@ -100,7 +89,11 @@ class Lz4Test {
         int restoredDataLength = decompressor.decompress(compressedBytes, buffer);
         byte[] restoredBytes = new byte[restoredDataLength];
         System.arraycopy(buffer, 0, restoredBytes, 0, restoredDataLength);
-        Files.write(Path.of(path.toFile().getPath().replace(".txt.bin", ".txt")), restoredBytes, CREATE, TRUNCATE_EXISTING);
+        Files.write(
+            Path.of(path.toFile().getPath().replace(".txt.bin", ".txt")),
+            restoredBytes,
+            CREATE,
+            TRUNCATE_EXISTING);
       }
     }
   }
