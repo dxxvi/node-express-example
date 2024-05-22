@@ -1,16 +1,20 @@
 package home;
 
+import static java.nio.charset.StandardCharsets.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.jsoup.nodes.Document;
@@ -18,6 +22,11 @@ import org.jsoup.nodes.Document.OutputSettings;
 
 public abstract class Utils {
   public static final String ALGORITHM = "AES";
+
+  /*
+    public static final Base64 BASE64 =
+        Base64.builder().setUrlSafe(true).setPadding((byte) '~').get();
+  */
 
   private Utils() {}
 
@@ -89,11 +98,16 @@ public abstract class Utils {
             font-optical-sizing: auto;
             font-style: normal;
           }
+          pre, code { font-family: "Fira Code", monospace; font-size: .91rem }
         </style>""");
   }
 
   public static void addStuff(Document document, String title, String css) {
-    addStuff(document, title, css, "https://learning.oreilly.com");
+    addStuff(
+        document,
+        title,
+        css,
+        aesDecryptToUrl("0pQ7zRJnRa3glafQ/RMiW8Aa7AOWi13FhrHL3Fhiid0=").toString());
   }
 
   /**
@@ -142,6 +156,65 @@ public abstract class Utils {
       prettyHtml = prettyHtml.replace(placeHolder, entry.getValue());
     }
     Files.writeString(path, "<!DOCTYPE html>" + prettyHtml, CREATE, TRUNCATE_EXISTING);
+  }
+
+  public static byte[] aesDecrypt(byte[] bytes) throws Throwable {
+    final Cipher aesDecryptor = Cipher.getInstance(ALGORITHM);
+    aesDecryptor.init(Cipher.DECRYPT_MODE, getAESSecretKey());
+    return aesDecryptor.doFinal(bytes);
+  }
+
+  public static byte[] aesEncrypt(byte[] bytes) throws Throwable {
+    final Cipher aesEncryptor = Cipher.getInstance(ALGORITHM);
+    aesEncryptor.init(Cipher.ENCRYPT_MODE, getAESSecretKey());
+    return aesEncryptor.doFinal(bytes);
+  }
+
+  public static String aesEncrypt(URL url) throws Throwable {
+    final Cipher aesEncryptor = Cipher.getInstance(ALGORITHM);
+    aesEncryptor.init(Cipher.ENCRYPT_MODE, getAESSecretKey());
+    byte[] bytes = aesEncryptor.doFinal(url.toString().getBytes(US_ASCII));
+    return Base64.getEncoder().encodeToString(bytes);
+  }
+
+  public static URL aesDecryptToUrl(String s) {
+    try {
+      final Cipher aesDecryptor = Cipher.getInstance(ALGORITHM);
+      aesDecryptor.init(Cipher.DECRYPT_MODE, getAESSecretKey());
+      byte[] bytes = Base64.getDecoder().decode(s.getBytes(US_ASCII));
+      bytes = aesDecryptor.doFinal(bytes);
+      return new URI(new String(bytes, US_ASCII)).toURL();
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  /**
+   * UrlEncoder is used because this method is used to encrypt a file name to a string which is used
+   * as a file name.
+   */
+  public static String encodeThenEncryptThenEncode(String filename) {
+    try {
+      byte[] bytes1 = Base64.getEncoder().encode(filename.getBytes(UTF_8));
+      byte[] bytes2 = aesEncrypt(bytes1);
+      return Base64.getUrlEncoder().encodeToString(bytes2).replace("=", "");
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  public static String decodeThenDecryptThenDecode(String filename) {
+    for (int numberOfPaddingCharacters : new int[] {0, 1, 2}) {
+      try {
+        filename += "=".repeat(numberOfPaddingCharacters);
+        byte[] bytes1 = Base64.getUrlDecoder().decode(filename.getBytes(US_ASCII));
+        byte[] bytes2 = aesDecrypt(bytes1);
+        return new String(Base64.getDecoder().decode(bytes2), US_ASCII);
+      } catch (Throwable t) {
+        // ignored because we might not get the right number of padding characters
+      }
+    }
+    throw new RuntimeException("Unable to decode this file name " + filename);
   }
 
   public static SecretKey getAESSecretKey() {

@@ -1,8 +1,9 @@
-package home;
+package home.books;
 
 import static java.nio.charset.StandardCharsets.*;
-import static java.nio.file.StandardOpenOption.*;
 
+import home.Tuple2;
+import home.Utils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -13,17 +14,23 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 
 class JavaCodingProblemsTest {
-  private static final String FILENAME = "java-coding-problems.txt";
+  private static final String FILENAME =
+      Utils.decodeThenDecryptThenDecode(
+          "W79oWhQqF6k9iS0kzGyqYBC3KjS3Cs2JGpX9Am6GD38cS9lvkTlwix1N4_WVmmol");
   private static final Path PATH_TXT = Path.of("src/test/resources", FILENAME);
   private static final Path PATH_HTML =
       Path.of("src/test/resources", FILENAME.replace(".txt", ".html"));
+  private static final String IMG1_URL =
+      Utils.aesDecryptToUrl(
+              "0pQ7zRJnRa3glafQ/RMiW4NdLWkV7CDCFaQF+BtxlpPVcz8sT9a9NKDtgLt6K96kDVkGzibs7faRh8IfyL8t64mrlpgwZ0iTk3E+1VfQcajmKGrc3xGKFbRSvvS8c92b")
+          .toString();
   private static final String CSS =
       """
       a { text-decoration: none }
       p, li { line-height: 1.45 }
       div.note {
         padding-left: 6rem;
-        background-image: url(https://learning.oreilly.com/api/v2/epubs/urn:orm:book:9781837633944/files/Images/info.png);
+        background-image: url(%s);
         background-repeat: no-repeat;
         background-size: 90px auto;
         background-position: 0 center;
@@ -56,7 +63,8 @@ class JavaCodingProblemsTest {
       div#toc a.toc-1 { padding-top: 1rem }
       div#toc a.toc-2 { padding-left: 1rem }
       div#toc a.toc-3 { padding-left: 2rem }
-      div#toc a.toc-4 { padding-left: 3rem }""";
+      div#toc a.toc-4 { padding-left: 3rem }"""
+          .formatted(IMG1_URL);
 
   @Test
   void test() throws Throwable {
@@ -64,7 +72,7 @@ class JavaCodingProblemsTest {
         Utils.extractPres(Files.readString(PATH_TXT, UTF_8));
     var document = Jsoup.parse(tuple._1());
 
-    Utils.addStuff(document, "Java Coding Problems - 2nd ed", CSS);
+    Utils.addStuff(document, Utils.decodeThenDecryptThenDecode("B7KCzK20RUkxUkgxHUsMv5t5CKCYhlFfEfpDL1fwjxDRF5lLpEFy8clkE2Xy7Ik9"), CSS);
 
     // specific for each book
     document
@@ -104,7 +112,7 @@ class JavaCodingProblemsTest {
               }
               innerTocDiv.append(
                   """
-            <a href="#%s" class="%s">%s</a>"""
+                  <a href="#%s" class="%s">%s</a>"""
                       .formatted(id, cssClass, h.text()));
             });
     tocDiv.appendChild(innerTocDiv);

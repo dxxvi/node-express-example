@@ -59,6 +59,7 @@ class Lz4Test {
     }
   }
 
+  // Run this when there's a new src/test/resources/newthing.txt
   @Test
   void compressThenEncryptAll() throws Throwable {
     final LZ4Compressor compressor = LZ4Factory.fastestJavaInstance().highCompressor(99);
@@ -68,13 +69,14 @@ class Lz4Test {
     try (Stream<Path> stream = Files.walk(Path.of("src/test/resources"))) {
       for (Path path : stream.filter(p -> p.toFile().getPath().endsWith(".txt")).toList()) {
         byte[] compressedBytes = compressor.compress(Files.readAllBytes(path));
-        byte[] encryptedBytes = aesEncryptor.doFinal(compressedBytes);
+        byte[] encryptedBytes = Utils.aesEncrypt(compressedBytes);
         Files.write(
             Path.of(path.toFile().getPath() + ".bin"), encryptedBytes, CREATE, TRUNCATE_EXISTING);
       }
     }
   }
 
+  // Run this to decrypt then decompress src/test/resources/*.txt.bin
   @Test
   void decryptThenDecompressAll() throws Throwable {
     final LZ4SafeDecompressor decompressor = LZ4Factory.safeInstance().safeDecompressor();
