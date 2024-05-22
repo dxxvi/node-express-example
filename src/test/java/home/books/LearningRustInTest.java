@@ -10,11 +10,12 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class LearningRustInTest {
-  private static final String FILENAME = Utils.decodeThenDecryptThenDecode("iVAjZOE2mLRT5AxOqLzbKl4tbMH0PYEIXapClpWiPMLCCMvfdC33DeN68tloPe0G4_Iep4wyigwqc5MKFeFMNA");
+  private static final String FILENAME =
+      Utils.decodeThenDecryptThenDecode(
+          "iVAjZOE2mLRT5AxOqLzbKl4tbMH0PYEIXapClpWiPMLCCMvfdC33DeN68tloPe0G4_Iep4wyigwqc5MKFeFMNA");
   private static final Path PATH_TXT = Path.of("src/test/resources", FILENAME);
   private static final Path PATH_HTML =
       Path.of("src/test/resources", FILENAME.replace(".txt", ".html"));
@@ -58,7 +59,11 @@ class LearningRustInTest {
         Utils.extractPres(Files.readString(PATH_TXT, UTF_8));
     var document = Jsoup.parse(tuple._1());
 
-    Utils.addStuff(document, Utils.decodeThenDecryptThenDecode("I-UppN2YhY3PJna2uTeDPKnBqOpm4Fe7QbH7dtQq25u4V9jRMRRbG03oA-OmlHXqHEvZb5E5cIsdTeP1lZpqJQ"), CSS);
+    Utils.addStuff(
+        document,
+        Utils.decodeThenDecryptThenDecode(
+            "I-UppN2YhY3PJna2uTeDPKnBqOpm4Fe7QbH7dtQq25u4V9jRMRRbG03oA-OmlHXqHEvZb5E5cIsdTeP1lZpqJQ"),
+        CSS);
 
     // specific for each book
     document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));

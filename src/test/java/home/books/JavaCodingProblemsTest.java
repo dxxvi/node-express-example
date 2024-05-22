@@ -72,7 +72,11 @@ class JavaCodingProblemsTest {
         Utils.extractPres(Files.readString(PATH_TXT, UTF_8));
     var document = Jsoup.parse(tuple._1());
 
-    Utils.addStuff(document, Utils.decodeThenDecryptThenDecode("B7KCzK20RUkxUkgxHUsMv5t5CKCYhlFfEfpDL1fwjxDRF5lLpEFy8clkE2Xy7Ik9"), CSS);
+    Utils.addStuff(
+        document,
+        Utils.decodeThenDecryptThenDecode(
+            "B7KCzK20RUkxUkgxHUsMv5t5CKCYhlFfEfpDL1fwjxDRF5lLpEFy8clkE2Xy7Ik9"),
+        CSS);
 
     // specific for each book
     document
