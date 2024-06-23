@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" style="font-size: 17px">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&amp;family=Noto+Sans:ital,wght@0,100..900;1,100..900&amp;family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;display=swap"
+        rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet" crossorigin="anonymous"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH">
+  <style>
+    :root:root {
+      --bs-body-color: #333;
+      --bs-font-sans-serif: "Noto Sans", sans-serif;
+      --bs-font-monospace: "FiraCode Nerd Font Mono", "Fira Code", monospace;
+    }
+    body { margin: .5rem .5rem 0 }
+    button.one-letter { min-width: 3em }
+    span.result { min-width: 2em; text-align: center; display: inline-block }
+    .result .correct { color: #3b3 }
+    .result .incorrect { color: #f33 }
+    .result .correct, .result .incorrect { display: none }
+    .result.correct .correct { display: unset }
+    .result.incorrect .incorrect { display: unset }
+    div#send-message .c1 { margin: .5rem }
+  </style>
+  <script>
+    async function send1(button) {
+      button.nextElementSibling.classList.remove('correct');
+      button.nextElementSibling.classList.remove('incorrect');
+
+      const uri = `/send1/${button.innerText.trim()}`
+      const response = await fetch(uri);
+      if (response.ok) {
+        button.nextElementSibling.classList.add('correct');
+      } else {
+        button.nextElementSibling.classList.add('incorrect');
+      }
+    }
+
+    async function getMessage(button) {
+      const tr = button.parentElement.parentElement;
+      const topic = tr.querySelector('input[aria-label="topic"]').value.trim();
+      const groupId = tr.querySelector('input[aria-label="group id"]').value.trim();
+      let response = await fetch(`/get-message/${topic}/group-id/${groupId}`);
+      if (response.status === 502) {
+        await getMessage(button);
+      } else if (response.status !== 200) {
+        console.log(`Response status code: ${response.status}`)
+        await new Promise(resolve => setTimeout(resolve, 1000)); // wait for 1s
+        await getMessage(button);                                // then re-connect
+      } else {
+        let json = await response.json();
+        tr.querySelector('td[aria-label="key"]').innerHTML = json['key'];
+        tr.querySelector('td[aria-label="value"]').innerHTML = json['value'];
+        await getMessage(button);
+      }
+    }
+  </script>
+</head>
+<body>
+<h3>Send message to ???</h3>
+<div style="display: flex; flex-wrap: wrap" id="send-message">
+
+</div>
+<script>
+  (function() {
+    let s = '';
+    for (let i = 65; i <= 90; i++) {
+      s += `
+        <div class="c1">
+          <button type="button" class="btn btn-light one-letter" onclick="send1(this)">
+            ${String.fromCharCode(i)}
+          </button>
+          <span class="result">
+            <span class="correct">&#x2714;</span>
+            <span class="incorrect">&#x274C;</span>
+          </span>
+        </div>
+      `;
+    }
+    document.getElementById('send-message').insertAdjacentHTML('beforeend', s);
+  })();
+</script>
+
+<hr>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Topic</th>
+      <th>Group Id</th>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><button type="button" class="btn btn-light" onclick="getMessage(this)">Get Messages</button></td>
+      <td><input type="text" class="form-control" placeholder="topic" aria-label="topic"></td>
+      <td><input type="text" class="form-control" placeholder="group id" aria-label="group id"></td>
+      <td aria-label="key"></td>
+      <td aria-label="value"></td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

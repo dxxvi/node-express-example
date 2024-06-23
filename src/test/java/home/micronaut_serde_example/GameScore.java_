@@ -1,0 +1,28 @@
+package home.micronaut_serde_example;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.micronaut.serde.annotation.Serdeable;
+
+@Serdeable
+public class GameScore {
+  @JsonProperty(value = "game_id", required = true)
+  private final String gameId; // playerId is in the message key
+
+  @JsonProperty(value = "score", required = true)
+  private final int score;
+
+  @JsonCreator
+  public GameScore(String gameId, int score) {
+    this.gameId = gameId;
+    this.score = score;
+  }
+
+  public String getGameId() {
+    return gameId;
+  }
+
+  public int getScore() {
+    return score;
+  }
+}

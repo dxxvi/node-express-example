@@ -1,0 +1,12 @@
+package home.micronaut_serde_example;
+
+import io.micronaut.serde.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+class MicronautSerializationTest {
+  @Test
+  void testSerdeable() throws Throwable {
+    Assertions.fail("Don't know how to use the micronaut serialization library yet");
+  }
+}
