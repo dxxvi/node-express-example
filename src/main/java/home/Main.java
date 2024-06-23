@@ -2,22 +2,19 @@ package home;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.CommonClientConfigs;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.security.auth.SecurityProtocol;
 import org.apache.kafka.common.security.plain.PlainLoginModule;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner.Mode;
@@ -35,6 +32,7 @@ public class Main {
   private static final Logger log = LoggerFactory.getLogger(Main.class);
   private static final Random random = new Random();
   private static final ObjectMapper objectMapper = new ObjectMapper();
+  private static final List<Topic_GroupId> topic_groupIds = new CopyOnWriteArrayList<>();
 
   public static void main(String[] args) {
     var springApplication = new SpringApplication(Main.class);
@@ -51,57 +49,61 @@ public class Main {
     return ResponseEntity.internalServerError().body("");
   }
 
+  /**
+   * This is very inefficient (in the browser, it takes 4-6s to get a message): we have to connect
+   * to the kafka cluster every time to get 1 message.
+   * Idea: having a thread (identified by the topic + groupId) polling messages and putting them in
+   * a blocking queue (we must be able to find the queue if we have the thread). This method will
+   * check if that thread exists. If not, it will create it.
+   */
   @GetMapping(path = "/get-message/{topic}/group-id/{group-id}")
   public DeferredResult<String> getMessage(
       @PathVariable(name = "topic") String topic, @PathVariable(name = "group-id") String groupId) {
     // Not sure if we really run in a virtual thread as the thread name is `tomcat-handler-...`
 
-    Properties kafkaProperties = kafkaProperties();
-    kafkaProperties.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-    kafkaProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    kafkaProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    kafkaProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-    kafkaProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-    //    kafkaProperties.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
+    Optional<Topic_GroupId> topic_groupIdOptional =
+        topic_groupIds.stream()
+            .filter(x -> x.topic().equals(topic) && x.groupId().equals(groupId))
+            .findAny();
+    if (topic_groupIdOptional.isEmpty()) {
+      var blockingQueue = new LinkedBlockingDeque<Partition_Key_Value>();
+      var messageGettingRunnable = new MessageGettingRunnable(blockingQueue, topic, groupId);
+      Thread.ofVirtual().name(topic + "-" + groupId).start(messageGettingRunnable);
+      topic_groupIdOptional =
+          Optional.of(new Topic_GroupId(topic, groupId, blockingQueue, messageGettingRunnable));
+      topic_groupIds.add(topic_groupIdOptional.get());
+    }
 
-    DeferredResult<String> result = null;
+    DeferredResult<String> result = new DeferredResult<>();
 
-    try (KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<>(kafkaProperties)) {
-      kafkaConsumer.subscribe(List.of(topic));
-      while (result == null) {
-        for (ConsumerRecord<String, String> consumerRecord :
-            kafkaConsumer.poll(Duration.ofMillis(500))) {
-          result = new DeferredResult<>();
-          try {
-            result.setResult(
-                objectMapper.writeValueAsString(
-                    Map.ofEntries(
-                        Map.entry("partition", consumerRecord.partition()),
-                        Map.entry("key", consumerRecord.key()),
-                        Map.entry("value", consumerRecord.value()))));
-          } catch (JsonProcessingException e) {
-            result.setResult(
-                """
-                {
-                  "partition": %d,
-                  "key": "%s",
-                  "value": "%s"
-                }"""
-                    .formatted(
-                        consumerRecord.partition(),
-                        consumerRecord.key(),
-                        e.getMessage().replace('"', ' ')));
-          }
-          kafkaConsumer.commitSync(
-              Map.of(
-                  new TopicPartition(consumerRecord.topic(), consumerRecord.partition()),
-                  new OffsetAndMetadata(
-                      consumerRecord.offset() + 1) // offset is the next one we want to read
-                  ));
-          break; // because we want to get only 1 message at a time
+    try {
+      var partition_key_value = topic_groupIdOptional.get().queue().poll(9, TimeUnit.DAYS);
+      if (partition_key_value != null) {
+        try {
+          result.setResult(
+              objectMapper.writeValueAsString(
+                  Map.ofEntries(
+                      Map.entry("partition", partition_key_value.partition()),
+                      Map.entry("key", partition_key_value.key()),
+                      Map.entry("value", partition_key_value.value()))));
+        } catch (JsonProcessingException e) {
+          result.setResult(
+              """
+              {
+                "partition": %d,
+                "key": "%s",
+                "value": "%s"
+              }"""
+                  .formatted(
+                      partition_key_value.partition(),
+                      partition_key_value.key(),
+                      e.getMessage().replace('"', ' ')));
         }
       }
+    } catch (InterruptedException iex) {
+      result.setErrorResult(iex.getMessage());
     }
+
     return result;
   }
 

@@ -69,6 +69,7 @@
         }
         partitionTR.querySelector('td[aria-label="key"]').innerHTML = json['key'];
         partitionTR.querySelector('td[aria-label="value"]').innerHTML = json['value'];
+        await new Promise(resolve => setTimeout(resolve, 500));
         await getMessage(button);
       }
     }

@@ -82,7 +82,7 @@ class ConfluentTest {
                       .send(
                           new ProducerRecord<>(
                               TOPIC_NAME,
-                              s + s,
+                              s + " " + s,
                               Integer.toString(ai.getAndIncrement()) + randomUUID()))
                       .get();
               LOG.info(
@@ -98,7 +98,7 @@ class ConfluentTest {
             }
           };
 
-      for (char c = 'a'; c <= 'z'; c++) consumer.accept(Character.toString(c));
+      for (char c = 'a'; c <= 'b'; c++) consumer.accept(Character.toString(c));
     }
   }
 
