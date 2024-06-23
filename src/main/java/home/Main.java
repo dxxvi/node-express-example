@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -77,22 +76,28 @@ public class Main {
             result.setResult(
                 objectMapper.writeValueAsString(
                     Map.ofEntries(
+                        Map.entry("partition", consumerRecord.partition()),
                         Map.entry("key", consumerRecord.key()),
                         Map.entry("value", consumerRecord.value()))));
           } catch (JsonProcessingException e) {
             result.setResult(
                 """
                 {
-                  "key": "error",
+                  "partition": %d,
+                  "key": "%s",
                   "value": "%s"
                 }"""
-                    .formatted(e.getMessage().replace('"', ' ')));
+                    .formatted(
+                        consumerRecord.partition(),
+                        consumerRecord.key(),
+                        e.getMessage().replace('"', ' ')));
           }
-          kafkaConsumer.commitSync(Map.of(
-              new TopicPartition(consumerRecord.topic(), consumerRecord.partition()),
-              new OffsetAndMetadata(
-                  consumerRecord.offset() + 1) // offset is the next one we want to read
-          ));
+          kafkaConsumer.commitSync(
+              Map.of(
+                  new TopicPartition(consumerRecord.topic(), consumerRecord.partition()),
+                  new OffsetAndMetadata(
+                      consumerRecord.offset() + 1) // offset is the next one we want to read
+                  ));
           break; // because we want to get only 1 message at a time
         }
       }

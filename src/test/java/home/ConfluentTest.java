@@ -81,7 +81,9 @@ class ConfluentTest {
                   kafkaProducer
                       .send(
                           new ProducerRecord<>(
-                              TOPIC_NAME, s, Integer.toString(ai.getAndIncrement())))
+                              TOPIC_NAME,
+                              s + s,
+                              Integer.toString(ai.getAndIncrement()) + randomUUID()))
                       .get();
               LOG.info(
                   "A ({}, {}) is sent to topic {}, partition {}, offset {} at {}",
@@ -96,8 +98,7 @@ class ConfluentTest {
             }
           };
 
-      for (char c = 'e'; c <= 'z'; c++) consumer.accept(Character.toString(c));
-      //      for (char c = 'z'; c >= 'a'; c--) consumer.accept(Character.toString(c));
+      for (char c = 'a'; c <= 'z'; c++) consumer.accept(Character.toString(c));
     }
   }
 

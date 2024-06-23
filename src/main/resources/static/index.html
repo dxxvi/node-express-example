@@ -54,8 +54,21 @@
         await getMessage(button);                                // then re-connect
       } else {
         let json = await response.json();
-        tr.querySelector('td[aria-label="key"]').innerHTML = json['key'];
-        tr.querySelector('td[aria-label="value"]').innerHTML = json['value'];
+        const partition = json['partition'];
+        const selectorQuery = `tbody[aria-label="partition-key-value"] tr[aria-label="partition${partition}"]`;
+        let partitionTR = tr.querySelector(selectorQuery);
+        if (partitionTR === null) {
+          tr.querySelector('tbody[aria-label="partition-key-value"]').insertAdjacentHTML(
+              'beforeend',
+              `<tr aria-label="partition${partition}">
+                 <td aria-label="partition">${partition}</td>
+                 <td aria-label="key"></td>
+                 <td aria-label="value"></td>
+               </tr>`);
+          partitionTR = tr.querySelector(selectorQuery);
+        }
+        partitionTR.querySelector('td[aria-label="key"]').innerHTML = json['key'];
+        partitionTR.querySelector('td[aria-label="value"]').innerHTML = json['value'];
         await getMessage(button);
       }
     }
@@ -89,22 +102,33 @@
 <hr>
 
 <table class="table table-bordered">
-  <thead>
-    <tr>
-      <th></th>
-      <th>Topic</th>
-      <th>Group Id</th>
-      <th>Key</th>
-      <th>Value</th>
-    </tr>
-  </thead>
   <tbody>
     <tr>
       <td><button type="button" class="btn btn-light" onclick="getMessage(this)">Get Messages</button></td>
-      <td><input type="text" class="form-control" placeholder="topic" aria-label="topic"></td>
-      <td><input type="text" class="form-control" placeholder="group id" aria-label="group id"></td>
-      <td aria-label="key"></td>
-      <td aria-label="value"></td>
+      <td>
+        <table class="table .table-borderless">
+          <thead><tr><th>Topic</th></tr></thead>
+          <tbody><tr><td><input type="text" class="form-control" aria-label="topic"></td></tr></tbody>
+        </table>
+      </td>
+      <td>
+        <table class="table .table-borderless">
+          <thead><tr><th>Group ID</th></tr></thead>
+          <tbody><tr><td><input type="text" class="form-control" aria-label="group id"></td></tr></tbody>
+        </table>
+      </td>
+      <td>
+        <table class="table table-striped">
+          <thead>
+            <tr><th>Partition</th><th>Key</th><th>Value</th></tr>
+          </thead>
+          <tbody aria-label="partition-key-value">
+            <!-- Create a new <tr aria-label="partitionX"> with 3 <td>'s (<td aria-label="partition">,
+            <td aria-label="key"> and <td aria-label="value"></td>) inside
+            -->
+          </tbody>
+        </table>
+      </td>
     </tr>
   </tbody>
 </table>
