@@ -41,6 +41,7 @@ class LearningRustInTest {
       h1 { font-size: 1.67rem; font-weight: 300; color: #666 }
       h2 { font-size: 1.32rem; font-weight: 400; color: #26f }
       h3 { font-size: 1.15rem; font-weight: 400; color: #f26 }
+      div.flex { display: flex }
       div#toc { position: fixed; top: 0; right: 3rem; background-color: rgba(255, 255, 255, .9);
         max-height: 82vh; overflow: auto; z-index: 9; padding: 1rem; padding-top: .1rem;
         padding-bottom: .5rem; border: 1px solid #ccc; border-top: 0
@@ -67,6 +68,7 @@ class LearningRustInTest {
 
     // specific for each book
     document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));
+    document.select("p.body").forEach(p -> p.removeClass("body"));
     document
         .select("div.orm-ChapterReader-codeSnippetContainer + p.fm-code-annotation")
         .forEach(
@@ -81,6 +83,19 @@ class LearningRustInTest {
                 } else {
                   p = nextP;
                 }
+              }
+            });
+    document
+        .select("p + div.orm-ChapterReader-codeSnippetContainer")
+        .forEach(
+            div -> {
+              Element p = div.previousElementSibling();
+              if (p.text().endsWith(":")) {
+                Element newDiv = document.createElement("div");
+                newDiv.addClass("flex");
+                p.before(newDiv);
+                newDiv.appendChild(p);
+                newDiv.appendChild(div);
               }
             });
     document

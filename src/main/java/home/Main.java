@@ -35,7 +35,7 @@ public class Main {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
       final String POST_METHOD = "POST";
-      final String FILENAME = "rust-server-service-app.txt";
+      final String FILENAME = "algebra-I-all-in-ones-for-dummies.txt";
       final Path PATH = Path.of("src/test/resources", FILENAME);
 
       if (exchange.getRequestMethod().equals(POST_METHOD)) {

@@ -125,8 +125,14 @@ public abstract class Utils {
             """
             <meta name="viewport" content="width=device-width, initial-scale=1">""")
         .append("<title>%s</title>".formatted(title))
-        .append("""
-        <style>%s</style>""".formatted(css));
+        .append(
+            """
+            <style>
+              img { max-width: 99%% }
+              a { text-decoration: none }
+            </style>
+            <style>%s</style>"""
+                .formatted(css));
     addFonts(document);
     var outputSettings =
         new OutputSettings().charset(UTF_8).indentAmount(2).prettyPrint(true).syntax(html);
