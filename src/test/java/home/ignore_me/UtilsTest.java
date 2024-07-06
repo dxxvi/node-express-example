@@ -52,7 +52,7 @@ class UtilsTest {
 
   @Test
   void testUrlEncryptDecrypt() throws Throwable {
-    String s = "https://learning.oreilly.com";
+    String s = "https://learning.at.home.com";
     String encrypted = Utils.aesEncrypt(new URI(s).toURL());
     System.out.println(encrypted);
     URL url = Utils.aesDecryptToUrl(encrypted);
