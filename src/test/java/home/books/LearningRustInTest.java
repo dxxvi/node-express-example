@@ -22,7 +22,7 @@ class LearningRustInTest {
   private static final String CSS =
       """
       :root {
-        --pre-background: #eef6fa;
+        --pre-background: #f1f6fa;
       }
       a { text-decoration: none }
       pre { background: linear-gradient(90deg, var(--pre-background), #fff, var(--pre-background));
@@ -52,7 +52,9 @@ class LearningRustInTest {
       div#toc a.toc-1 { padding-top: 1rem }
       div#toc a.toc-2 { padding-left: 1rem }
       div#toc a.toc-3 { padding-left: 2rem }
-      div#toc a.toc-4 { padding-left: 3rem }""";
+      div#toc a.toc-4 { padding-left: 3rem }
+      span.fm-combinumeral { font-size: 120% }
+      p.fm-head2 { font-weight: 500; color: #5d11d6}""";
 
   @Test
   void test() throws Throwable {
@@ -69,7 +71,7 @@ class LearningRustInTest {
     // specific for each book
     document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));
     document.select("p.body").forEach(p -> p.removeClass("body"));
-    document
+    document // move the code annotation section to the right of the code
         .select("div.orm-ChapterReader-codeSnippetContainer + p.fm-code-annotation")
         .forEach(
             p -> {
@@ -90,13 +92,20 @@ class LearningRustInTest {
         .forEach(
             div -> {
               Element p = div.previousElementSibling();
-              if (p.text().endsWith(":")) {
-                Element newDiv = document.createElement("div");
-                newDiv.addClass("flex");
-                p.before(newDiv);
-                newDiv.appendChild(p);
-                newDiv.appendChild(div);
-              }
+              Element newDiv = document.createElement("div");
+              newDiv.addClass("flex");
+              p.before(newDiv);
+              newDiv.appendChild(p);
+              newDiv.appendChild(div);
+            });
+    document
+        .select("div.flex > div.orm-ChapterReader-codeSnippetContainer > div.orm-ChapterReader-snippetButtonContainer")
+            .forEach(div -> {
+              Element codeSnippetContainer = div.parent();
+              Element flexDiv = codeSnippetContainer.parent();
+              String html = codeSnippetContainer.html();
+              codeSnippetContainer.remove();
+              flexDiv.append(html);
             });
     document
         .select("p.co-summary-head + ul + *")
