@@ -1,0 +1,24 @@
+kafka:
+  bootstrapServers: 'bootstrap:9092'
+  consumerGroup: test-group
+  errorTopicName: ABCD_EF12_ERROR
+  schemaRegistry: 'https://schemaregistry.com:8081'
+  ssl:
+    keyPassword: 'password'
+    keystore:
+      location: /path/to/file.jks
+      password: 'password'
+      type: JKS
+    truststore:
+      location: /path/to/file.jks
+      password: 'password'
+      type: JKS
+  topicName: ABCD_EF12
+  useSSL: true
+
+logging:
+  level.home: debug
+  pattern:
+    dateformat: 'HH:mm:ss.SSS'
+    level: '%highlight(%-5.5p)'
+
