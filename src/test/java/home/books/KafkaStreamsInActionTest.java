@@ -27,9 +27,9 @@ class KafkaStreamsInActionTest {
       h5 { font-size: 1em; margin-bottom: .5rem; color: #069799; font-weight: 500 }
       h5 strong { font-weight: 600 }
       .num-string { margin-right: 1em }
-      div.introduction-summary > h3 { color: #444; float: left }
-      div.introduction-summary > ul { float: left }
-      div.introduction-summary::after { display: block; content: ''; clear: both }
+      div.introduction-summary:has( > h3) { display: flex }
+      div.introduction-summary > * { margin-top: 0 }
+      div.introduction-summary > h3 { color: #444; font-size: 1rem; font-weight: 400 }
       table { border-collapse: collapse } td { border: 1px solid #999; padding: .4em .8em }
       p > code { font-size: .97rem; background: #f1f2f1; padding: .1em .2em }
       div.print-book-callout.note, div.print-book-callout.tip {
@@ -37,16 +37,17 @@ class KafkaStreamsInActionTest {
       div.print-book-callout.note { background-color: #f7f7f7 }
       div.print-book-callout.tip { background-color: #f7fff7 }
       .print-book-callout-head.tip, .print-book-callout-head.note {
-        font-weight: 900; text-transform: uppercase; margin-right: 1em;
+        font-weight: 700; text-transform: uppercase; margin-right: 1em;
         font-family: "Noto Sans", sans-serif }
       div.flex { display: flex }
       div.flex > h5:first-child { margin-top: 1em; margin-right: 1em }
       div.flex > p { margin-right: 1em }
       p:has(+ div.flex > h5:first-child + div), p:has(+ div.flex > p) { margin-bottom: 0 }
+      h3 + div.flex > * { margin-top: 0 }
       pre[data-code-area-highlighted="true"] { background-color: #f5f6f7; padding: .5rem }
       code.hljs span.hljs-comment { font-style: italic; color: #888 }
       code.hljs span.hljs-string { color: #3e4287 }
-      """;
+      h1:has(span.chapter-title-numbering) { margin-top: 4em }""";
 
   @Test
   void test() throws Throwable {
@@ -264,10 +265,16 @@ class KafkaStreamsInActionTest {
                     }
                   });
         });
-    List.of("data-annotation-counter", "data-annotation-type", "data-aframe-id", "data-frame-type", "data-y")
-        .forEach(unneededAttr -> {
-          document.select("[" + unneededAttr + "]").forEach(el -> el.removeAttr(unneededAttr));
-        });
+    List.of(
+            "data-annotation-counter",
+            "data-annotation-type",
+            "data-aframe-id",
+            "data-frame-type",
+            "data-y")
+        .forEach(
+            unneededAttr -> {
+              document.select("[" + unneededAttr + "]").forEach(el -> el.removeAttr(unneededAttr));
+            });
     document
         .select("p + ul")
         .forEach(
@@ -305,17 +312,22 @@ class KafkaStreamsInActionTest {
               }
             });
     document // the Listing
-        .select("div > h5:first-child + div.code-area-container:last-child, div > h5:first-child + img:last-child")
+        .select(
+            "div > h5:first-child + div.code-area-container:last-child, div > h5:first-child + img:last-child")
         .forEach(div -> div.parent().addClass("flex"));
-    document.select("p + div > div:first-child:last-child > i[id]:last-child:first-child")
-        .forEach(pre -> {
-          Element div = pre.parent().parent();
-          Element p = div.previousElementSibling();
-          Element newDiv = document.createElement("div").addClass("flex");
-          p.before(newDiv);
-          newDiv.appendChild(p).appendChild(pre); // p, pre are re-parented, so no need to remove them
-          div.remove();
-        });
+    document
+        .select("p + div > div:first-child:last-child > i[id]:last-child:first-child")
+        .forEach(
+            pre -> {
+              Element div = pre.parent().parent();
+              Element p = div.previousElementSibling();
+              Element newDiv = document.createElement("div").addClass("flex");
+              p.before(newDiv);
+              newDiv
+                  .appendChild(p)
+                  .appendChild(pre); // p, pre are re-parented, so no need to remove them
+              div.remove();
+            });
 
     // insert the pre back and write to file
     Utils.insertPreBackThenWriteToFile(document, tuple._2(), PATH_HTML);
