@@ -49,7 +49,7 @@ class LearningRustInTest {
       p + div.flex > * { margin-top: 0 }
       p.fm-callout { margin-left: 3em; margin-right: 2em }
       p.fm-callout > span.fm-callout-head {
-        display: inline-block; margin-right: 1em; font-family: 'Noto Sans', sans-serif;
+        display: inline-block; padding: .1rem .5rem; font-family: 'Noto Sans', sans-serif; background-color: #ff7;
         font-weight: 700
       }
       div#toc { position: fixed; top: 0; right: 3rem; background-color: rgba(255, 255, 255, .9);
@@ -454,8 +454,7 @@ class LearningRustInTest {
                 '24310611ecd68ed333fe940c241c29697fdadf8e': 35,
                 '38390e28cee426d74e036524b623f780c42eff0d': 35,
                 '549a5529ef7495531c43bc31060e0f398d1fff66': 35,
-                '7a4ca22b1a19e74e609cd65dbd5a22a82807f8bf': 35,
-                '7a4ca22b1a19e74e609cd65dbd5a22a82807f8bf': 44,
+                '7a4ca22b1a19e74e609cd65dbd5a22a82807f8bf': 27,
                 'b7d7eb0d2ff2216f936b401d7ec475ca6feeab8e': 44,
                 'ed93e72eaca7a14db28e22d338f81ba30bb5fb64': 44,
                 'ea5318a99c0ba02ffcf3db80df238387a369a9a6': 31,
@@ -490,7 +489,6 @@ class LearningRustInTest {
                 '89aca5cb7b44b3be6b4a613398f6a67d5f95458d': 44,
                 'a0f9873b6c517a2fac89a0b8806ac919b3067b5d': 35,
                 '91ffbb9c386d146a4de73dbb1f8fc9c0380fa8a0': 55,
-                '58eb0a1988247440feb74958d2c76377a0a512bc': 35,
                 'b08e401345915bd3f76315d62187fff5e4f65d69': 27,
                 'f0f6585193dd39f8e1e66e54b5a03dbd84ad0dc4': 44,
                 '9b6734c689ec729258fc6705af1fcd4bdab9b903': 44,
@@ -524,13 +522,14 @@ class LearningRustInTest {
                 '8de70e64e85e9f562ca6779aa19ce6cafdae129e': 44,
                 '14ef7b7743f6edd53224bf31c176f6955726fe4a': 38,
                 'bd510de78fd8e4aed0b2e56f701562ca021bedc9': 44,
-                '61d666a021b666e621e1e6c0f952626267f51969': 32,
-                'e24202f27c4d950c2630ecd42692240de96e0e4e': 55,
+                '61d666a021b666e621e1e6c0f952626267f51969': 27,
+                'e24202f27c4d950c2630ecd42692240de96e0e4e': 35,
+                'f455260e979ccf8aee5d511e26aa191290883064': 35,
                 'e0c6a3fe40cdce41d64f1537c7f0ae16b42eac16': 55,
                 'e2bbf747f2793980f9cd1c1b9a45842660b9af6b': 55,
                 '12b4f90eb522a3dd4f863dbba8231456dd71ace3': 66,
                 'c28d02feaf422a18249f8b35ee3f619ec87ab1c9': 72,
-                'a8b796134c378e8566ed44327928ac8932f4e780': 44,
+                'a8b796134c378e8566ed44327928ac8932f4e780': 41,
                 '9782247fa026cfa9955593cd9f2519c44c884b52': 48,
                 '08513ff275f4c1040b8b4d9aa78ffc981bd097d9': 55,
                 '2571d1fa2e09720e36be19f5879d93dcd5305e76': 35,
@@ -541,7 +540,7 @@ class LearningRustInTest {
                 '07eebe99a3f9bdf114ec925da566fcb945470ce3': 55,
                 '20a536bd67b0f25bc675c0cb05a15b85900e0e01': 44,
                 '5b336d9c71a661a9d7a90589d79f352a84bab946': 34,
-                'bbe96a88d1635d21a781a59d44ac637889f6fa6f': 34,
+                'bbe96a88d1635d21a781a59d44ac637889f6fa6f': 27,
                 'e1a697b4c7db3ce53afeb1f69cf549ceb1fc8613': 44,
                 'd2a772a038cc8777c182b20f07f8a41f83893f22': 44,
                 '2344eb569ad75a9eb98257321dc239750b8bb102': 44,
@@ -553,7 +552,7 @@ class LearningRustInTest {
                 'f48e9d6192d19d4e1d8ed9b1f992e0f6b0bb872f': 32,
                 '6a239fb15662e85ab054ad831a9119501ccee48a': 32,
                 '4979d623085dd09fa7f36388d76f4601630b44b7': 32,
-                '05313c19baa3878652c8a0fc5ffbec2ab71308a6': 55,
+                '05313c19baa3878652c8a0fc5ffbec2ab71308a6': 44,
                 '96ef607ee7dda7b859d97f4c13f704a8722893ba': 31,
                 '5e41952f4faf0aad997af04fb698a21451f146e8': 33,
                 '84267249ab95e80a8efbfa5fea7683676042b47b': 34,
@@ -625,7 +624,25 @@ class LearningRustInTest {
                 'cb51bc02b648cd957f2b65d353959296609dd971': 16,
                 'aed92e6dd879583565fcdf64f6670e3552123a6b': 55,
                 '8fbd1b66f2145df180cd26bdd428f113d92b7243': 35,
-                'f697cc619182c77550c88128bb4530ffd003b276': 18
+                'f697cc619182c77550c88128bb4530ffd003b276': 18,
+                '04c7111f7e42436b3b5a204fb9c79f3c3beaf782': 45,
+                '6e96113b5ac113fad842253b4c1e4b7c12a62ad3': 45,
+                '12e01cfe4b06e4f5c1fde6b27f057edd91ec7916': 45,
+                '8ec7e9e67fc15422de30d77d4455a90625cd848e': 45,
+                'd74ca697732513afc341848c871995f41765560d': 45,
+                'fb74e6f971019340351951fa6916540908b9983c': 35,
+                'fe4b37647f9ddbb440ba18c21a73201cadbe36ba': 35,
+                '2286fc57a70107e6b88f54627f7c23ae5e242fca': 27,
+                'd8614ba9c650f0ff9750017e5d7852e73265c10c': 27,
+                'de4565a4a0d5393c77c9c608a50b89c982e6dbd2': 27,
+                '60eac59b617edb1c60395e8b03b0f6cd98c27710': 44,
+                '7c139ef1582d73025108da5339db62e60f097ab3': 44,
+                'a53fc09815114a5a512372acedc274493ccda8b0': 11,
+                '53b09800a35f8097b54986257d316adfbf115202': 30,
+                '71e1c949f6253238f3d5d2c31949e8aa6073088b': 8,
+                '97b544e0da26a72bd96f7dd79e7f91277dc014f5': 27,
+                'bad345b7ec0d93b7209d7c8be0c74018a889f6f4': 22,
+                '6c7582434fd02a7c1c4da1875f12749753eb25bb': 29
               };
               document.querySelectorAll('div.flex > p:first-child').forEach(p => {
                 const id = sha1(p.innerHTML);
@@ -652,11 +669,8 @@ class LearningRustInTest {
                 '52130842f97581aebfebe5c414976f8452b616d8',
                 'c8900d00443d4564c91dce2c93857c895d39b0dc',
                 '2a8f738b46b596da871c3d7df303f503d2546b87',
-                '1a180a8c046f0d0c0044ad9ee4371dbe7267a835',
                 '0393dbc5c16426fba5fe217e8870e15364ddd370',
                 '4fc49613736421c5526df5f47051346dc40ed425',
-                'a8fbd244f589f59b681980ffa3d361bec5494ca8',
-                '7be73d535cee52e760cb09158d54a9c40501ef5a',
                 'eaf2f7c15224510ed216b37e9c963d7fbafa5bb8',
                 'ebb18a04594ad2d5aa980f3e64451c0bc7fd58cf',
                 '076764701187bc385c81b77bd455386120fba5b2',
@@ -670,34 +684,18 @@ class LearningRustInTest {
                 '8987deaa0fa27a3ef734be96a7a88f6569d1e0bb',
                 'fee7dd47f90f148ac33f6372f3ca867d9dff3200',
                 'e9593269b9098b7dee86391e5b64a96fa04583c8',
-                'db0ff9aaa2c79a505cf250d20417baedb1b97275',
                 '02eec1d99a9ce3e9c624b9e6471fe3b7007bc292',
-                '53b09800a35f8097b54986257d316adfbf115202',
-                'fea3e45dbe0875c7d2761d7381798f54174b6c34',
-                '25dc6116fc813a5e25009e616a7c17a630d71214',
                 'c017539d7e4355ca355a64e67b4f6bd367c9e9e7',
                 '2e71a91dad7aaa811d6cc17ee7ba17337b955121',
-                '95f7643efe19db6a71e6e1c7fa9dbea62f5fc98c',
                 'c15e8786c0c34d9ad16a04f9f0237d606903c909',
                 '8f0f384c2bbda3d4c6f77b64209a9894280ce1e5',
                 'e77ddc0e92368a90f646b9695e00c062a8c76e80',
-                '8fbd1b66f2145df180cd26bdd428f113d92b7243',
-                '8c8d02e875c6fa9649d8429f4a4d9699a0ab39f5',
                 '35c456b5717ed84b27282a8004b3dff87d4da566',
                 '60eac59b617edb1c60395e8b03b0f6cd98c27710',
                 '7c139ef1582d73025108da5339db62e60f097ab3',
-                'f697cc619182c77550c88128bb4530ffd003b276',
-                'baafd0efcf82a6a013bde61d58526850ea1b47d4',
-                '80a9a52d20398bf0ed25c666f44f53e0f1c515f9',
-                '9b29fb058df43be39f859b4562ecde5793bda4aa',
-                'aebd8c163a2994b2ade201258ad18f72c306a5c0',
-                '4a7cdd2698992b13b2e34ff69636b82f39df7115',
                 '760525d635ce366022a33844f7c4715ca220f4ef',
-                '92366c80b431cd3ade77aa3a20e0423e76f56d94',
-                '14ef79190cf7f54f6424a3a59914c53af28aef8a',
                 'a6c30aa21b092883b4ef4801ff76e184b88a308d',
                 '8799cac805dea2ed0194926a342ed4c90c902d65',
-                'db0bd6823de0b7b6ab68679701666cc887e984ef',
                 '100ccf93c8e3788781e79c3bf1cb911025b5b76f',
                 '1d1b9c1d7e5a6e9412addda43d1b42bbfea133a1',
                 'a9217803d4cde3ce76eddc553c84b0cf03d5c1e9',
@@ -705,21 +703,11 @@ class LearningRustInTest {
                 '22f32f35e70d03578608645637c6fb91ff696031',
                 '9c4d96350dfb80956f28b966214aab1b061052be',
                 '968ff6e290f6cbe628ccf8cd329a23fe9fc50d0d',
-                '64ee6eb62663f018504d87eab8287d65c242a919',
-                '809ea06232ecf1f6527448365e3b41392c2d0af2',
                 '13866edc6a975ea5f7d8a5e7540b867fd9c833dd',
-                'aba13b90d23c791b3105e952b2ee982444a019b0',
-                'c935fffed39237c829bcab1abdf489a6b1b3c0aa',
-                '3165612e15dd81d081ad2ea3bdee303a0e8cef7a', // the innerText is: `Here is the output:`
                 '98309907d947ce2d763414f36df6723ec3b202a0',
                 '49968fdb9104c113dfc2bbdf669ebb2c24f9283a',
                 '023f32299a56c55440a949e7dc2127cf3a04142c',
                 'dcd0d9a3b1901a5ad525534234b736da748626ae',
-                '4a310480afbd94666ab49c8e64877a50a5b97a60',
-                '008c5ddcc9f5e75ca49dd437f1a92547df55edd2',
-                'b74092ee0df3ba07fe0359c2fc212e1989374f34',
-                '67cc10039fc91277812946577e58f67982792ca0',
-                '860537f04c649b35d5f4b5e9d0386a36066753b8',
                 '5af76eeb8a711f566c69c24bc2e3d49c23e14fc6',
                 '3aa3550ae7537e156c24625ed232ab1d452a010e',
                 '129c218da5f645ff93a76e232aa708a9c2b19dbd',
@@ -753,7 +741,8 @@ class LearningRustInTest {
                 'a6700d99a9ed416d6f9f39526ef732f47a02d833',
                 'a836acab40e21417f5b9f0b663411d5d83f6c9c9',
                 '1d8e4e5d9900c4f2b20e9aa3e49131f62cfacb8c',
-                'f2bbbade8894cef6c322fff28ffa383051bee5ad'
+                'f2bbbade8894cef6c322fff28ffa383051bee5ad',
+                '58eb0a1988247440feb74958d2c76377a0a512bc'
               ];
               document.querySelectorAll('div.flex > p:first-child').forEach(p => {
                 const id = sha1(p.innerHTML);
@@ -768,7 +757,7 @@ class LearningRustInTest {
               });
 
               const removeFlex = [
-                '10bf3a9ef866e9836df728cd6135ed3fa9726255'
+                '10bf3a9ef866e9836df728cd6135ed3fa9726255', 'a0dab6aa6d1c729addabffba7088abc0639c7af2'
               ];
               document.querySelectorAll('div.flex > p:first-child').forEach(p => {
                 const id = sha1(p.innerHTML);
@@ -788,15 +777,15 @@ class LearningRustInTest {
     document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));
     document.select("p.body").forEach(p -> p.removeClass("body"));
     document // move the code annotation section to the right of the code
-        .select("div.orm-ChapterReader-codeSnippetContainer + p.fm-code-annotation")
+        .select("div.orm-ChapterReader-codeSnippetContainer + .fm-code-annotation")
         .forEach(
             p -> {
               Element div = p.previousElementSibling();
               Element innerDiv = div.select("div.orm-ChapterReader-snippetButtonContainer").get(0);
               while (p != null) {
-                Element nextP = p.nextElementSibling(); // can be null
+                Element nextP = p.nextElementSibling(); // can be null or <p> or <div>
                 innerDiv.appendChild(p); // no need to remove p as it'll be re-parented
-                if (nextP == null || !nextP.hasClass("fm-code-annotation") || !nextP.nameIs("p")) {
+                if (nextP == null || !nextP.hasClass("fm-code-annotation") || (!nextP.nameIs("p") && !nextP.nameIs("div"))) {
                   p = null;
                 } else {
                   p = nextP;
@@ -826,6 +815,11 @@ class LearningRustInTest {
               flexDiv.append(html);
             });
     document
+            .select("div.orm-ChapterReader-snippetButtonContainer")
+            .forEach(div -> {
+                if (div.childNodeSize() == 0) div.remove();
+            });
+    document
         .select("p.co-summary-head + ul + *")
         .forEach(
             el -> {
@@ -834,12 +828,6 @@ class LearningRustInTest {
               ul.addClass("float-left");
               Element p = ul.previousElementSibling();
               p.addClass("float-left");
-            });
-    document
-        .select("div.orm-ChapterReader-snippetButtonContainer")
-        .forEach(
-            div -> {
-              if (div.childNodeSize() == 0) div.remove();
             });
 
     // build the TOC
