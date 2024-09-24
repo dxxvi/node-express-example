@@ -4,8 +4,10 @@ import static java.nio.charset.StandardCharsets.*;
 
 import home.Tuple2;
 import home.Utils;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -63,11 +65,14 @@ class JavaCodingProblemsTest {
       div#toc a.toc-1 { padding-top: 1rem }
       div#toc a.toc-2 { padding-left: 1rem }
       div#toc a.toc-3 { padding-left: 2rem }
-      div#toc a.toc-4 { padding-left: 3rem }"""
+      div#toc a.toc-4 { padding-left: 3rem }
+      div.flex { display: flex } div.flex > *:not(:first-child) { margin-left: 1rem }"""
           .formatted(IMG1_URL);
 
   @Test
   void test() throws Throwable {
+    var messageDigest = MessageDigest.getInstance("MD5");
+
     Tuple2<String, Map<Integer, String>> tuple =
         Utils.extractPres(Files.readString(PATH_TXT, UTF_8));
     var document = Jsoup.parse(tuple._1());
@@ -87,6 +92,30 @@ class JavaCodingProblemsTest {
               number.text(number.text() + ". " + title.text());
               title.remove();
             });
+    // put a <p> ending with ':' followed by a div.orm-ChapterReader-codeSnippetContainer in flex
+    document
+        .select("p + div.orm-ChapterReader-codeSnippetContainer")
+        .forEach(
+            div -> {
+              Element p = div.previousElementSibling();
+              if (p.text().endsWith(":")) {
+                Element flexDiv = document.createElement("div").addClass("flex");
+                p.before(flexDiv);
+                flexDiv.appendChild(p).appendChild(div);
+                byte[] bytes = messageDigest.digest(flexDiv.html().getBytes(UTF_8));
+                flexDiv.attr("md5", new BigInteger(1, bytes).toString(36).toLowerCase());
+              }
+            });
+    // remove the flex class on div's with these md5's
+    String[] needToHaveFlexRemovedMd5s = {"36dfkes9nvfpk10xo2zqjut75", "5gax8quit2haymxku5q3n7cmr"};
+    for (String md5 : needToHaveFlexRemovedMd5s) {
+      document
+          .select("div.flex[md5]")
+          .forEach(
+              div -> {
+                if (div.attr("md5").equals(md5)) div.removeClass("flex");
+              });
+    }
 
     // build the TOC
     Element tocDiv = document.createElement("div").attr("id", "toc");

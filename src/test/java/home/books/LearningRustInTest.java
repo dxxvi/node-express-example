@@ -4,9 +4,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import home.Tuple2;
 import home.Utils;
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -24,6 +28,7 @@ class LearningRustInTest {
       :root {
         --pre-background: #f1f6fa;
       }
+      .smaller-font-size { font-size: 82% }
       a { text-decoration: none }
       pre { background: linear-gradient(90deg, var(--pre-background), #f9fdff, var(--pre-background));
         padding: .7rem 1rem; margin-left: 1rem
@@ -45,11 +50,11 @@ class LearningRustInTest {
       h2.fm-head + div.flex > * { margin-top: 0 }
       div.flex { display: flex; position: relative }
       div > div.temp { position: absolute; top: 0; left: 0; padding: .5rem; background-color: rgba(255, 255, 255, .8); display: none }
-      div.flex > pre.programlisting + div.temp + p, div.flex > pre.programlisting + * + div.temp + p { margin-left: 1rem }
+      div.flex > pre.programlisting + p, div.flex > pre.programlisting + * + p { margin-left: 1rem }
       p + div.flex > * { margin-top: 0 }
       p.fm-callout { margin-left: 3em; margin-right: 2em }
       p.fm-callout > span.fm-callout-head {
-        display: inline-block; padding: .1rem .5rem; font-family: 'Noto Sans', sans-serif; background-color: #ff7;
+        display: inline-block; padding: .1rem .5rem; font-family: 'Noto Sans', sans-serif; background-color: #afa;
         font-weight: 700
       }
       div#toc { position: fixed; top: 0; right: 3rem; background-color: rgba(255, 255, 255, .9);
@@ -64,10 +69,18 @@ class LearningRustInTest {
       div#toc a.toc-3 { padding-left: 2rem }
       div#toc a.toc-4 { padding-left: 3rem }
       span.fm-combinumeral { font-size: 120% }
-      p.fm-head2 { font-weight: 500; color: #5d11d6}""";
+      p.fm-head2 { font-weight: 500; color: #5d11d6}
+      pre.programlisting span.fat-arrow { color: #cc521d }
+      pre.programlisting span.double-colon { color: #09b31a }
+      i.fm-italics { background-color: #ffb }
+      i.fm-italics.heavy { background-color: #ff8; padding-left: .1rem; padding-right: .1rem }
+      pre span.yel, p span.yel { background-color: #ff8 }
+      pre i { color: #777 }""";
 
   @Test
   void test() throws Throwable {
+    var messageDigest = MessageDigest.getInstance("MD5");
+
     Tuple2<String, Map<Integer, String>> tuple =
         Utils.extractPres(Files.readString(PATH_TXT, UTF_8));
     var document = Jsoup.parse(tuple._1());
@@ -79,6 +92,14 @@ class LearningRustInTest {
         CSS);
 
     // specific for each book
+    for (Integer key : new HashSet<>(tuple._2().keySet())) {
+      String s = tuple._2().get(key);
+      s =
+          s.replace("=&gt;", "<span class=\"fat-arrow\">=&gt;</span>")
+              .replace("::", "<span class=\"double-colon\">::</span>");
+      tuple._2().put(key, s);
+    }
+
     document
         .body()
         .append(
@@ -412,10 +433,16 @@ class LearningRustInTest {
                 root.sha1 = exports;
               })();
               const id2maxwidth = {
+                '2ff02e1fcf48a13953189cfe9f89761b2cfe0e34': 21,
+                '869781e3912e236ae233a0493be88ce77f069227': 32,
                 '72a7c6d3b4a086d0651e4027f1734b41b4cdc18c': 35,
                 'e12f38393044d25483bee2f11bb4c84d9c7f5863': 35,
                 '92f036afe6192372f8db8921564a3e9e1562472d': 35,
                 'c9e1ba645e5ed1068a9d0da62d7e67e682e4001b': 35,
+                'f7dcf95b40662fa58c0b04da8cda579e36b3360b': 65,
+                'f3b446feeffa308b84bab5f73a3a2804387328d3': 37,
+                'bf19795de33e4acc5f3334e6d30838f38b4bb2ad': 23,
+                'e7cf768920999de65a95d99018ae7befad2f7969': 34,
                 '10bfb6e5584ad8ff98854f3a6e44a0ee4ddbf556': 28,
                 '8a427ff077df93ecb7b61fb79f033bcac4a38112': 50,
                 'c11ac683ec35b96fcbd14931625a0c97cd4dd9a7': 38,
@@ -479,7 +506,7 @@ class LearningRustInTest {
                 '25f4c8a411435977fb749f49d21872831ca4cb51': 16,
                 'ab74e349cae2bcc39598a11d1c9ae7e15e06c9f7': 35,
                 '0a9d37d261feaf67116cb592571b51bfa6b5fc15': 35,
-                'daa1067f7e2ca03fbb7025260d10c75b6749963c': 28,
+                'daa1067f7e2ca03fbb7025260d10c75b6749963c': 26,
                 '9bded734d14bc1ab6a1e96e1693b6253a50bbb1f': 47,
                 '7d636f38e38d3eac1b621df6aa166f691bfacab0': 55,
                 'f26f0ae52d864a33f3e875e6f9ed67bcb3a6ea43': 55,
@@ -497,7 +524,8 @@ class LearningRustInTest {
                 'd5f07508884e768070b781c5d7454aace2d831d6': 55,
                 'c0ad0001b4963c5026ba1b00e7e3b417187915ab': 55,
                 'fbc75995679ca9c1a7d8192d428a0c3045c1ff48': 67,
-                'e194e2be4f1f85e9cfedce704cc69e3adbf99e05': 35,
+                'e194e2be4f1f85e9cfedce704cc69e3adbf99e05': 19,
+                '0bcff10b4f6c875b087e4f9ca8dfe6e2520c9efb': 21,
                 '72972b60c20bb8edcfaa16249fd410ecfa828ce4': 55,
                 '9f5257d8d6cfa9fc5e6b744fe2742d0993f4412f': 55,
                 'e9c19951f4c53ab9491f0036730f1f586ea2c68c': 55,
@@ -520,7 +548,7 @@ class LearningRustInTest {
                 '5c3847e568a77cdd6f4574d3968aa9fbe90a3ae7': 44,
                 '807cf391487b772910b40798d74add12e3f7e29e': 44,
                 '8de70e64e85e9f562ca6779aa19ce6cafdae129e': 44,
-                '14ef7b7743f6edd53224bf31c176f6955726fe4a': 38,
+                '14ef7b7743f6edd53224bf31c176f6955726fe4a': 26,
                 'bd510de78fd8e4aed0b2e56f701562ca021bedc9': 44,
                 '61d666a021b666e621e1e6c0f952626267f51969': 27,
                 'e24202f27c4d950c2630ecd42692240de96e0e4e': 35,
@@ -528,6 +556,7 @@ class LearningRustInTest {
                 'e0c6a3fe40cdce41d64f1537c7f0ae16b42eac16': 55,
                 'e2bbf747f2793980f9cd1c1b9a45842660b9af6b': 55,
                 '12b4f90eb522a3dd4f863dbba8231456dd71ace3': 66,
+                '91ddb6f545682afd7d1a90c187a74d1745161199': 41,
                 'c28d02feaf422a18249f8b35ee3f619ec87ab1c9': 72,
                 'a8b796134c378e8566ed44327928ac8932f4e780': 41,
                 '9782247fa026cfa9955593cd9f2519c44c884b52': 48,
@@ -585,7 +614,7 @@ class LearningRustInTest {
                 '3d64b7ea2c62ac2a58057a28b658f98acc48f7ea': 44,
                 'a8886d7ab385232bacc0af5c836e35e82bf3f9f8': 55,
                 'fc40c7a9f5adb2063bd20b897caef2f0c422254c': 33,
-                '7e6103f517d67facf35fdd5fdb0af87c7b4fa2ba': 25,
+                '7e6103f517d67facf35fdd5fdb0af87c7b4fa2ba': 22,
                 'ddf85f4d79edc4d0caa0176c085c7779611686ed': 55,
                 '0ad5730822846104e712d2fa6089374ed66f4edf': 55,
                 '53ef1b17f809bb07948907498fb62a33edca3ace': 44,
@@ -595,8 +624,11 @@ class LearningRustInTest {
                 '1170150fbd861d5d4a3cbd1a1a3b9337ddf9be1e': 33,
                 '19f894b54495cf3953e7afb098cfcd38c8e458e4': 33,
                 '187bc79b50f93c88dbe1ad2b1685fe4571fbf1f1': 33,
+                '17662c84183b21e9a8a4d18f8269822ac37205a8': 27,
+                '3b57c77e011f2c2b85558af1edd08c1ffedc8b6a': 25,
                 '89b96c890eeff7192031b5e816aaa65a468b4279': 55,
                 '44eb52991a4295a0fdb808c707c47c071bb0df05': 33,
+                '0e7a6162ead786d16ba10b462f626621a63cd37b': 25,
                 'b755a2bc2d2705ef39e5f9bd6b2cdce4926f59f2': 19,
                 '9d31e478e3624228fee4ff9fca2d9f64634a2ad0': 19,
                 '17816e1496ff9e3ed37c1f82b049af34695f4ac1': 35,
@@ -608,10 +640,13 @@ class LearningRustInTest {
                 '673bf41b7c78708c2867176fe7c10277c10627b5': 55,
                 'a78efb0f10eb16fd54062fe4e10c84e2bd2e0424': 55,
                 '48f5582844cbb086e27ec6acb5dfb37a907a192e': 55,
+                'ae4b8e73959d141fc19976f064048ef3c0cacaf3': 18,
+                '88d78413218191d0644c42a12c0553b3576bcd27': 43,
                 'efd52a03febd99a2a7ba2994930ce4a20ddbe5bf': 55,
                 '37357546a8050b4852c0bac9887bef40e8a3846f': 35,
                 'e215ec3f17c9d962bed61b3e9927120e530dcd3f': 55,
                 '00aa2d712d66fc256782768e340ff28787fc7cc9': 55,
+                '0cfa4c5bff8931559a9360a0fd3b042dac234a9d': 35,
                 'e09475aa63b51c8345cc2d886dac90ce966b7678': 55,
                 'c7617c67bf312f4eec41226439cb3cdf17269e15': 55,
                 '4cd38e7e80feee361b13b3f19c04eb2471b893ca': 23,
@@ -619,6 +654,7 @@ class LearningRustInTest {
                 '3806363c8c0f0731a5baa411bd8b0370f2b3b697': 48,
                 'a522687ac83032e9c0778e734164cd410ba7f62e': 55,
                 'c4125f9a5feb06715347d1f8b90fcb33aa656d2a': 55,
+                '82d534112ede9ca8b12edca7905d153d62599766': 14,
                 '77dfdca1abb68b9e6398fe1e0b34e7fdf3304ee2': 6,
                 '83848b1c5f09d86d7f927edfba003f7a5ce323d7': 44,
                 'cb51bc02b648cd957f2b65d353959296609dd971': 16,
@@ -626,38 +662,91 @@ class LearningRustInTest {
                 '8fbd1b66f2145df180cd26bdd428f113d92b7243': 35,
                 'f697cc619182c77550c88128bb4530ffd003b276': 18,
                 '04c7111f7e42436b3b5a204fb9c79f3c3beaf782': 45,
-                '6e96113b5ac113fad842253b4c1e4b7c12a62ad3': 45,
+                '6e96113b5ac113fad842253b4c1e4b7c12a62ad3': 36,
                 '12e01cfe4b06e4f5c1fde6b27f057edd91ec7916': 45,
                 '8ec7e9e67fc15422de30d77d4455a90625cd848e': 45,
                 'd74ca697732513afc341848c871995f41765560d': 45,
-                'fb74e6f971019340351951fa6916540908b9983c': 35,
-                'fe4b37647f9ddbb440ba18c21a73201cadbe36ba': 35,
-                '2286fc57a70107e6b88f54627f7c23ae5e242fca': 27,
+                'fb74e6f971019340351951fa6916540908b9983c': 20,
+                'fe4b37647f9ddbb440ba18c21a73201cadbe36ba': 22,
+                '2286fc57a70107e6b88f54627f7c23ae5e242fca': 9,
                 'd8614ba9c650f0ff9750017e5d7852e73265c10c': 27,
                 'de4565a4a0d5393c77c9c608a50b89c982e6dbd2': 27,
                 '60eac59b617edb1c60395e8b03b0f6cd98c27710': 44,
                 '7c139ef1582d73025108da5339db62e60f097ab3': 44,
-                'a53fc09815114a5a512372acedc274493ccda8b0': 11,
+                'a53fc09815114a5a512372acedc274493ccda8b0': 7,
                 '53b09800a35f8097b54986257d316adfbf115202': 30,
+                'a9a87c9938513c9caf865563ec9bf251c33333c0': 37,
+                '01d042540d7c0ecf8a5b40a6662519d48ee3c7f7': 25,
+                'f56795056d5a403bd0c2ccc719588c130bf21ec8': 43,
                 '71e1c949f6253238f3d5d2c31949e8aa6073088b': 8,
                 '97b544e0da26a72bd96f7dd79e7f91277dc014f5': 27,
                 'bad345b7ec0d93b7209d7c8be0c74018a889f6f4': 22,
-                '6c7582434fd02a7c1c4da1875f12749753eb25bb': 29
+                '6c7582434fd02a7c1c4da1875f12749753eb25bb': 29,
+                'eab97a8c81b89a9b6a742a035b050ff0eb44a13c': 24,
+                'd357f8569eaa465a988a74655ece22674ea99999': 56,
+                'ab011e9485fa825ff75ff21da0c3b2022c9355b5': 16,
+                'bef514156daf293be72c23aa578e13b78212ba56': 15,
+                '21e786673dad266e5a1a4e75fc63b7de48c73600': 52,
+                '0f760ac43f6d28418ec7e33c396ccd9b69e2cc40': 30,
+                '009edf416ffd51dbf4009a18b743401028e0bf16': 33,
+                'da2e9dec13ec89a61bd18ce8fa2a463bb778ce73': 28,
+                'e9f5dba11e83ddc362e08b41e6f3a80ab66ef75d': 18,
+                '1b4953d73c0d59e9c1eadc9579de706f620609ad': 41,
+                'e75b117eac7c2c3da0b3bb1f83dcc656ecfff060': 34,
+                '25834cec7fd0591cd6812543583dee43f591c4a0': 73,
+                '867c8b109aa46037963a081baa89339f84f7ad7a': 34,
+                '81adb7ee39e3a9fbc3a41c37a18e6479516fad31': 19,
+                'de0a439a74228f31395d70f2552f8360352a54cc': 10,
+                '6088672b433b40fe55fdb8156b75fe911debbc8c': 27,
+                '4cb9dccfaffb143352d768526e436b7fb3e00a6c': 42,
+                '635eb0f473ba89633fa4dfeb07cdfdfab99a86da': 18,
+                'b9a9f0ff29252de1db5e38097ceac79888461f00': 39,
+                '2ac330209b3441f28faaecf9c7e86a530baf9624': 22,
+                '3da607f1ee71c4086f15ada5f04eed88cf848782': 12,
+                'e9b21857633defd3eaae3d0dcd2131e2864ce5f2': 67,
+                'c4854c1d84adfeb88c65a337392b09ca91412b8e': 10,
+                'b1fd2c962d2352d7a91a1afe19dd4d4cf1806c40': 24,
+                'fff7338f05b9716084c9ad0f2d5ab6d81adfd4c6': 63,
+                '7bc497fca1bfbec370e777095609d72b6d65552b': 48,
+                '2fb0e18ac9eb8d37da57345079a944aa23c5f937': 25,
+                '3a8b95307c9fb88f65fbe81c91983255d73c0de4': 45,
+                '58eb0a1988247440feb74958d2c76377a0a512bc': 29,
+                '6fd49bd21495088c4c025c99f408431f617faa87': 39,
+                'aa75d8b1a4dee3f5b5bba0bfd5f81a7716c49c6f': 22,
+                '5bbf9811db221149aeaf3e025d5f5daf71057c64': 45,
+                '50b63427c675af9bf10766d11fd8654c02e8ee8d': 47,
+                'fca2ff182df45bc0b9b546344d7cbbcc9e7fcb69': 47,
+                '563caae39d6b79827ecd84216899d5db548c3384': 23,
+                '3127e933a0d0d098922f1c04ea95b07e7708f9cc': 21,
+                'f2b91df8330e384e8ceea50989deb902abe0f717': 36,
+                'a16243d0d8dd6cf102346518ab76da439e570828': 27,
+                'eab09c1476546b135c0736da540783f3a3bc2000': 23,
+                'b996c57b4ae6d47ec7997abf6fbf3eea1902ebac': 42,
+                'd0f50c7728b318da5e624db5bf5f830e7eed009c': 32,
+                '72b88eafc8ac65f4603f4e763d595e3823b36531': 32,
+                'bf2af2ccb434013c21697d5bfdb0ad28a7d89dbd': 43,
+                '5be778c9201ae656a2dac1812a7a9465ac66f938': 23,
+                '207e64aa2b6183a1403063b5b35ddb47260da172': 21,
+                'cec696a049a54611532e7ca934b4210aebada7d1': 37,
+                '8f65298b0d01d57ddcd00869fc6d402f2d7bace3': 21,
+                '05b80a98289f754c5658e46b4c28d798beacee89': 48,
+                'e246fed64ec1c5f8fa702e2ac6d76bf6c6ea970e': 53,
+                '1a8d6e282c80298b4716ff852eb558f0ffe63daf': 59,
+                'adbe68f95708b0ab665570eef193585d7970b6c4': 54,
+                'f2cd24ab35817de54e5db141ec0b9bd669414aac': 44,
+                '95caf13a1919db4bb76a5ab97731d94c21603573': 29,
+                '6238952ea8c9e5401f89e071c60f700a5609901a': 27
               };
               document.querySelectorAll('div.flex > p:first-child').forEach(p => {
                 const id = sha1(p.innerHTML);
                 if (id2maxwidth.hasOwnProperty(id)) {
                   p.style.maxWidth = id2maxwidth[id] + 'rem';
-                } /*else {*/
-                  const div = p.parentElement;
-                  const d = document.createElement("div");
-                  d.setAttribute('class', 'temp');
-                  d.innerHTML = id;
-                  div.appendChild(d);
-                /*}*/
+                }
+                p.setAttribute('sha1', id);
               });
 
               const mergeList = [
+                '5f92211f9b82b5efccec829953cb81209562a740',
                 '4102b0dda9b55694454996b567767d7f61fa1a6e',
                 '4395d0b684694c5dc6a60e14e0a4a58a32b36d50',
                 '277cdf703990c741c609fe277a64a5fc4ec642a0',
@@ -676,14 +765,9 @@ class LearningRustInTest {
                 '076764701187bc385c81b77bd455386120fba5b2',
                 'c4219f8646c11f95f7643079c5db0d7253ac476d',
                 'ff1061a460a9092bd3a8b0a3939cf30ff200048e',
-                '2dea28a07e2f88625f896f5b82ed9c6a1a17fcbd',
-                'e8b42a9e78ebee0df3028661987712717322f4ee',
                 'bb25f62c25919ddab308e58c67b0bee399ee9e2f',
-                '46718dd166f68dd58452975f7587fcf5f280fadd',
-                'fbfa9d25618e6d59b4e83734471eb36606e903dd',
                 '8987deaa0fa27a3ef734be96a7a88f6569d1e0bb',
                 'fee7dd47f90f148ac33f6372f3ca867d9dff3200',
-                'e9593269b9098b7dee86391e5b64a96fa04583c8',
                 '02eec1d99a9ce3e9c624b9e6471fe3b7007bc292',
                 'c017539d7e4355ca355a64e67b4f6bd367c9e9e7',
                 '2e71a91dad7aaa811d6cc17ee7ba17337b955121',
@@ -691,7 +775,6 @@ class LearningRustInTest {
                 '8f0f384c2bbda3d4c6f77b64209a9894280ce1e5',
                 'e77ddc0e92368a90f646b9695e00c062a8c76e80',
                 '35c456b5717ed84b27282a8004b3dff87d4da566',
-                '60eac59b617edb1c60395e8b03b0f6cd98c27710',
                 '7c139ef1582d73025108da5339db62e60f097ab3',
                 '760525d635ce366022a33844f7c4715ca220f4ef',
                 'a6c30aa21b092883b4ef4801ff76e184b88a308d',
@@ -708,10 +791,7 @@ class LearningRustInTest {
                 '49968fdb9104c113dfc2bbdf669ebb2c24f9283a',
                 '023f32299a56c55440a949e7dc2127cf3a04142c',
                 'dcd0d9a3b1901a5ad525534234b736da748626ae',
-                '5af76eeb8a711f566c69c24bc2e3d49c23e14fc6',
-                '3aa3550ae7537e156c24625ed232ab1d452a010e',
                 '129c218da5f645ff93a76e232aa708a9c2b19dbd',
-                '15bd2b13b05713aebae8438ba476411babd6eded',
                 'e64962b7a693280832eaec7683f048330d4c8ed4',
                 '41be75fff86ff0be9532f6f1ddb42cbd6c62d9b1',
                 '05f8084fdec6c3e4c760b1a846067a19e06f2dbf',
@@ -737,12 +817,9 @@ class LearningRustInTest {
                 'c1d7a47aa4225b555ff47b87af1f52cf44830175',
                 '990950ef011cc47448fa85762e596d27fc15ff56',
                 '1c4a507bb07bf7e7d22c8c5566863cd732735416',
-                'e5ab9934dfc88feeec6aa398062e533207db5660',
-                'a6700d99a9ed416d6f9f39526ef732f47a02d833',
-                'a836acab40e21417f5b9f0b663411d5d83f6c9c9',
-                '1d8e4e5d9900c4f2b20e9aa3e49131f62cfacb8c',
                 'f2bbbade8894cef6c322fff28ffa383051bee5ad',
-                '58eb0a1988247440feb74958d2c76377a0a512bc'
+                '0d6b305ea6cd206d0a26138a7fc84efcb19bd5c0',
+                'b91180ace3c5d0730a568b559f3f6c312648b707'
               ];
               document.querySelectorAll('div.flex > p:first-child').forEach(p => {
                 const id = sha1(p.innerHTML);
@@ -779,20 +856,24 @@ class LearningRustInTest {
     document // move the code annotation section to the right of the code
         .select("div.orm-ChapterReader-codeSnippetContainer + .fm-code-annotation")
         .forEach(
-            p -> {
-              Element div = p.previousElementSibling();
+            fmCodeAnnotation -> {
+              Element div = fmCodeAnnotation.previousElementSibling();
               Element innerDiv = div.select("div.orm-ChapterReader-snippetButtonContainer").get(0);
-              while (p != null) {
-                Element nextP = p.nextElementSibling(); // can be null or <p> or <div>
-                innerDiv.appendChild(p); // no need to remove p as it'll be re-parented
-                if (nextP == null || !nextP.hasClass("fm-code-annotation") || (!nextP.nameIs("p") && !nextP.nameIs("div"))) {
-                  p = null;
+              while (fmCodeAnnotation != null) {
+                Element nextP =
+                    fmCodeAnnotation.nextElementSibling(); // can be null or <p> or <div>
+                innerDiv.appendChild(
+                    fmCodeAnnotation); // no need to remove p as it'll be re-parented
+                if (nextP == null
+                    || !nextP.hasClass("fm-code-annotation")
+                    || (!nextP.nameIs("p") && !nextP.nameIs("div"))) {
+                  fmCodeAnnotation = null;
                 } else {
-                  p = nextP;
+                  fmCodeAnnotation = nextP;
                 }
               }
             });
-    document
+    document // move the p and the code to a flex div
         .select("p + div.orm-ChapterReader-codeSnippetContainer")
         .forEach(
             div -> {
@@ -800,7 +881,7 @@ class LearningRustInTest {
               Element newDiv = document.createElement("div");
               newDiv.addClass("flex");
               p.before(newDiv);
-              newDiv.appendChild(p);
+              newDiv.appendChild(p); // no need to remove p and div as they'll be re-parented
               newDiv.appendChild(div);
             });
     document
@@ -815,9 +896,10 @@ class LearningRustInTest {
               flexDiv.append(html);
             });
     document
-            .select("div.orm-ChapterReader-snippetButtonContainer")
-            .forEach(div -> {
-                if (div.childNodeSize() == 0) div.remove();
+        .select("div.orm-ChapterReader-snippetButtonContainer")
+        .forEach(
+            div -> {
+              if (div.childNodeSize() == 0) div.remove();
             });
     document
         .select("p.co-summary-head + ul + *")
@@ -828,6 +910,39 @@ class LearningRustInTest {
               ul.addClass("float-left");
               Element p = ul.previousElementSibling();
               p.addClass("float-left");
+            });
+    // move p ending with ':' and followed by ul and that ul to a flex div with some exceptions
+    Set<String> ignoredMd5s =
+        Set.of(
+            "-1z442o24w6py27vamy6q61x9t",
+            "-2aktuirbqqveetrrvl4hxmzu8",
+            "-3s0q6ot30wap5kunp2wo0h5ea",
+            "2p5ju5a2en2ur48t7c5xycky7",
+            "2f9pkvnim7cb2cx64bsw2xubf",
+            "6ycqe0z1fjb5de7cymzhwt05o",
+            "-6nymk2fu3a7gdek10dzmlie0n",
+            "66euep12or8rhpdc2vnnpey1w",
+            "51sq6al5u6w70vzy4lh0a888p",
+            "-3dsawcs900a3qvqn78as5un7y",
+            "2lbo2f9e4gad74k6rdbit2i26",
+            "655i2xj5tmmohon6ofxitp9jx",
+            "209fz9chsg1f1s2ch0zy8s4b1",
+            "12ljv5y8307vgj5pu23zzwiww");
+    document
+        .select("p + ul")
+        .forEach(
+            ul -> {
+              Element p = ul.previousElementSibling();
+              if (!p.text().endsWith(":") || p.hasClass("co-summary-head")) return;
+              String md5 =
+                  new BigInteger(messageDigest.digest(p.html().getBytes(UTF_8))).toString(36);
+              p.attr("md5", md5);
+              if (!ignoredMd5s.contains(md5)) {
+                Element div = document.createElement("div").addClass("flex");
+                p.before(div);
+                div.appendChild(p);
+                div.appendChild(ul);
+              }
             });
 
     // build the TOC
