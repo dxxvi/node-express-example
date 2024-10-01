@@ -1,0 +1,1 @@
+import{r as n}from"./ace-fff8bc0c.js";import{e as c,U as m,K as i}from"./index-77be7e32.js";function f(s,e,r){const{clusterName:t}=c(),{roles:o,rbacFlag:a}=n.useContext(m);return i({roles:o,resource:s,action:e,clusterName:t,value:r,rbacFlag:a})}export{f as u};

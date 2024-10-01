@@ -1,0 +1,164 @@
+{
+  "groups": [
+    {
+      "name": "auth.oauth2",
+      "type": "com.provectus.kafka.ui.config.auth.OAuthProperties",
+      "sourceType": "com.provectus.kafka.ui.config.auth.OAuthProperties"
+    },
+    {
+      "name": "integration.odd",
+      "type": "com.provectus.kafka.ui.service.integration.odd.OddIntegrationProperties",
+      "sourceType": "com.provectus.kafka.ui.service.integration.odd.OddIntegrationProperties"
+    },
+    {
+      "name": "kafka",
+      "type": "com.provectus.kafka.ui.config.ClustersProperties",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties"
+    },
+    {
+      "name": "kafka.polling",
+      "type": "com.provectus.kafka.ui.config.ClustersProperties$PollingProperties",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties",
+      "sourceMethod": "getPolling()"
+    },
+    {
+      "name": "rbac",
+      "type": "com.provectus.kafka.ui.config.auth.RoleBasedAccessControlProperties",
+      "sourceType": "com.provectus.kafka.ui.config.auth.RoleBasedAccessControlProperties"
+    },
+    {
+      "name": "spring.ldap",
+      "type": "com.provectus.kafka.ui.config.auth.LdapProperties",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "webclient",
+      "type": "com.provectus.kafka.ui.config.WebclientProperties",
+      "sourceType": "com.provectus.kafka.ui.config.WebclientProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "auth.oauth2.client",
+      "type": "java.util.Map<java.lang.String,com.provectus.kafka.ui.config.auth.OAuthProperties$OAuth2Provider>",
+      "sourceType": "com.provectus.kafka.ui.config.auth.OAuthProperties"
+    },
+    {
+      "name": "integration.odd.token",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.service.integration.odd.OddIntegrationProperties"
+    },
+    {
+      "name": "integration.odd.topics-regex",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.service.integration.odd.OddIntegrationProperties"
+    },
+    {
+      "name": "integration.odd.url",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.service.integration.odd.OddIntegrationProperties"
+    },
+    {
+      "name": "kafka.admin-client-timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties"
+    },
+    {
+      "name": "kafka.clusters",
+      "type": "java.util.List<com.provectus.kafka.ui.config.ClustersProperties$Cluster>",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties"
+    },
+    {
+      "name": "kafka.internal-topic-prefix",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties"
+    },
+    {
+      "name": "kafka.polling.default-page-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties$PollingProperties"
+    },
+    {
+      "name": "kafka.polling.max-page-size",
+      "type": "java.lang.Integer",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties$PollingProperties"
+    },
+    {
+      "name": "kafka.polling.poll-timeout-ms",
+      "type": "java.lang.Integer",
+      "sourceType": "com.provectus.kafka.ui.config.ClustersProperties$PollingProperties"
+    },
+    {
+      "name": "rbac.roles",
+      "type": "java.util.List<com.provectus.kafka.ui.model.rbac.Role>",
+      "sourceType": "com.provectus.kafka.ui.config.auth.RoleBasedAccessControlProperties"
+    },
+    {
+      "name": "spring.ldap.active-directory",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.active-directory-domain",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.admin-password",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.admin-user",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.base",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.group-filter-search-base",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.group-filter-search-filter",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.group-role-attribute",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.is-active-directory",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties",
+      "defaultValue": false
+    },
+    {
+      "name": "spring.ldap.urls",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.user-filter-search-base",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "spring.ldap.user-filter-search-filter",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.auth.LdapProperties"
+    },
+    {
+      "name": "webclient.max-in-memory-buffer-size",
+      "type": "java.lang.String",
+      "sourceType": "com.provectus.kafka.ui.config.WebclientProperties"
+    }
+  ],
+  "hints": []
+}
