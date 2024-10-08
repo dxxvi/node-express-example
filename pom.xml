@@ -6,7 +6,7 @@
   <version>1</version>
   <properties>
     <commons-codec.version>1.17.0</commons-codec.version>
-    <java.version>22</java.version>
+    <java.version>23</java.version>
     <jsoup.version>1.17.2</jsoup.version>
     <junit.version>5.10.2</junit.version>
     <logback.version>1.5.6</logback.version>
