@@ -34,6 +34,7 @@ public class HerService {
   @Transactional
   public void only1canAccessNonOracle() throws Exception {
     String id = "id-1";
+    em.createNativeQuery("SET lock_timeout = '5'").executeUpdate();
     List<HerLock> herLocks =
         em.createQuery("select l from HerLock l where l.id = :id", HerLock.class)
             .setParameter("id", id)

@@ -42,6 +42,7 @@ public class MyService {
                 .getResultList();
         System.out.printf("The db should lock %d row(s): %s\n", myLocks.size(), id);
     */
+    em.createNativeQuery("SET lock_timeout = '5'").executeUpdate();
     var myLock =
         em.find(
             MyLock.class,
