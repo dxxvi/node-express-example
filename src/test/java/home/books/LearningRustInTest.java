@@ -53,7 +53,7 @@ class LearningRustInTest {
       div.flex > pre.programlisting + p, div.flex > pre.programlisting + * + p { margin-left: 1rem }
       p + div.flex > * { margin-top: 0 }
       p.fm-callout { margin-left: 3em; margin-right: 2em }
-      p.fm-callout > span.fm-callout-head {
+      p > span.fm-callout-head {
         display: inline-block; padding: .1rem .5rem; font-family: 'Noto Sans', sans-serif; background-color: #afa;
         font-weight: 700
       }
@@ -444,6 +444,7 @@ class LearningRustInTest {
                 'bf19795de33e4acc5f3334e6d30838f38b4bb2ad': 23,
                 'e7cf768920999de65a95d99018ae7befad2f7969': 34,
                 '10bfb6e5584ad8ff98854f3a6e44a0ee4ddbf556': 28,
+                '4102b0dda9b55694454996b567767d7f61fa1a6e': 30,
                 '8a427ff077df93ecb7b61fb79f033bcac4a38112': 50,
                 'c11ac683ec35b96fcbd14931625a0c97cd4dd9a7': 38,
                 '44915d7a1008253e17da6a55770b695447f68a70': 35,
@@ -460,6 +461,7 @@ class LearningRustInTest {
                 'e6c0b237860ec54c201e22311e49330fb592be92': 45,
                 'f6052396054299d623db3cc65ad1e3068a9a4676': 45,
                 '2773b2bc7e00a599b13766cde8f405acf2fecae6': 45,
+                '0aa494d4ac1c88f46ee435273f30cffedf714d02': 25,
                 'ad4a1e49a7005edd71376c48c2eccb492e879769': 35,
                 'bf05f7e45bab48559e33c34a65896749d00c1326': 35,
                 '1abbb3e9c173f1425924325c9ed5b7a037f59691': 35,
@@ -487,7 +489,7 @@ class LearningRustInTest {
                 'ea5318a99c0ba02ffcf3db80df238387a369a9a6': 31,
                 '176114f862dc03816c6ae3fd313ea0ee0c0039fe': 55,
                 '4d20fe2bb77c187da63fd10921b6618b71f8e353': 44,
-                'c2073d2480da31a3c7b0de8a656df2376b07c161': 35,
+                'c2073d2480da31a3c7b0de8a656df2376b07c161': 30,
                 '7912d64e06c744dd7de7116f8b3b5f279f803449': 35,
                 '676f810838f2004bb6e7f18df6ce4a28609ffb13': 35,
                 '9c2083dfcd7f8ecf2d025d20096138afd711fcdd': 35,
@@ -708,7 +710,8 @@ class LearningRustInTest {
                 'b1fd2c962d2352d7a91a1afe19dd4d4cf1806c40': 24,
                 'fff7338f05b9716084c9ad0f2d5ab6d81adfd4c6': 63,
                 '7bc497fca1bfbec370e777095609d72b6d65552b': 48,
-                '2fb0e18ac9eb8d37da57345079a944aa23c5f937': 25,
+                '2fb0e18ac9eb8d37da57345079a944aa23c5f937': 18,
+                'ac5ea3187c639b0ed8f10e8165abe375378b27a3': 32,
                 '3a8b95307c9fb88f65fbe81c91983255d73c0de4': 45,
                 '58eb0a1988247440feb74958d2c76377a0a512bc': 29,
                 '6fd49bd21495088c4c025c99f408431f617faa87': 39,
@@ -735,7 +738,13 @@ class LearningRustInTest {
                 'adbe68f95708b0ab665570eef193585d7970b6c4': 54,
                 'f2cd24ab35817de54e5db141ec0b9bd669414aac': 44,
                 '95caf13a1919db4bb76a5ab97731d94c21603573': 29,
-                '6238952ea8c9e5401f89e071c60f700a5609901a': 27
+                '6238952ea8c9e5401f89e071c60f700a5609901a': 27,
+                '50feb1848dafa4a3666b9aaf2b07ad649a772c4e': 31,
+                '338192050a9c4c46d0f372b7986a60e39aadf12a': 40,
+                '16b15101633e66a33c8a6adf8314c7b4afab9981': 26,
+                'd2fa831721ffee542702fc6406c85c49862fb845': 38,
+                'fd31069cd828dd172fd20bc85f8928a59a11b4eb': 21,
+                '2bcb1e480bf84cb7656c7739bed13cb4a2483f15': 26
               };
               document.querySelectorAll('div.flex > p:first-child').forEach(p => {
                 const id = sha1(p.innerHTML);
@@ -747,12 +756,10 @@ class LearningRustInTest {
 
               const mergeList = [
                 '5f92211f9b82b5efccec829953cb81209562a740',
-                '4102b0dda9b55694454996b567767d7f61fa1a6e',
                 '4395d0b684694c5dc6a60e14e0a4a58a32b36d50',
                 '277cdf703990c741c609fe277a64a5fc4ec642a0',
                 '4988677d8afe3f1314c60610c62a47a36ddd42f4',
                 '5eb2b435ac600b2b7ad459d684f67ddd8cf28e95',
-                'ebc666f95ac8a1311123e62bcaf239d0cdac3673',
                 'b75e2fbbc0096649da87c261ade7fdb2118052c7',
                 '1d45526f375a68f2cfa6382f52a5729d88a6b45c',
                 '52130842f97581aebfebe5c414976f8452b616d8',
@@ -761,7 +768,6 @@ class LearningRustInTest {
                 '0393dbc5c16426fba5fe217e8870e15364ddd370',
                 '4fc49613736421c5526df5f47051346dc40ed425',
                 'eaf2f7c15224510ed216b37e9c963d7fbafa5bb8',
-                'ebb18a04594ad2d5aa980f3e64451c0bc7fd58cf',
                 '076764701187bc385c81b77bd455386120fba5b2',
                 'c4219f8646c11f95f7643079c5db0d7253ac476d',
                 'ff1061a460a9092bd3a8b0a3939cf30ff200048e',
@@ -769,7 +775,6 @@ class LearningRustInTest {
                 '8987deaa0fa27a3ef734be96a7a88f6569d1e0bb',
                 'fee7dd47f90f148ac33f6372f3ca867d9dff3200',
                 '02eec1d99a9ce3e9c624b9e6471fe3b7007bc292',
-                'c017539d7e4355ca355a64e67b4f6bd367c9e9e7',
                 '2e71a91dad7aaa811d6cc17ee7ba17337b955121',
                 'c15e8786c0c34d9ad16a04f9f0237d606903c909',
                 '8f0f384c2bbda3d4c6f77b64209a9894280ce1e5',
@@ -811,11 +816,8 @@ class LearningRustInTest {
                 '6ce2db1ece051f6ea14b57efadf33a1e5007c4f1',
                 '31a68fde75725362d93191dec067ae026ae064b0',
                 '6bbe3a7625d023fe1210a55ce22cf32786b86859',
-                '8d7d1f3819d0858842e94c04345b252e9ace21c6',
                 '66330ff16f46a032b2e6ddd742ac415744c3baa8',
-                'a31bef06f7e5401192e175b13c280e8ab3977e94',
                 'c1d7a47aa4225b555ff47b87af1f52cf44830175',
-                '990950ef011cc47448fa85762e596d27fc15ff56',
                 '1c4a507bb07bf7e7d22c8c5566863cd732735416',
                 'f2bbbade8894cef6c322fff28ffa383051bee5ad',
                 '0d6b305ea6cd206d0a26138a7fc84efcb19bd5c0',
@@ -845,12 +847,6 @@ class LearningRustInTest {
 
               document.head.parentElement.style.fontSize = '20px'; // TODO remove me
             </script>""");
-    document
-        .select("a[rel='noopener noreferrer']")
-        .forEach(
-            a -> {
-              if (a.childNodeSize() == 0) a.remove();
-            });
     document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));
     document.select("p.body").forEach(p -> p.removeClass("body"));
     document // move the code annotation section to the right of the code
