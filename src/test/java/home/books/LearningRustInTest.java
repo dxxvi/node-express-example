@@ -12,6 +12,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
@@ -72,6 +76,7 @@ class LearningRustInTest {
       p.fm-head2 { font-weight: 500; color: #5d11d6}
       pre.programlisting span.fat-arrow { color: #cc521d }
       pre.programlisting span.double-colon { color: #09b31a }
+      pre.programlisting span.text { color: #c39 }
       i.fm-italics { background-color: #ffb }
       i.fm-italics.heavy { background-color: #ff8; padding-left: .1rem; padding-right: .1rem }
       pre span.yel, p span.yel { background-color: #ff8 }
@@ -92,8 +97,23 @@ class LearningRustInTest {
         CSS);
 
     // specific for each book
+    Pattern textPattern = Pattern.compile("""
+         (.*)("[a-zA-Z0-9 !]+")(.*)""");
+    Function<String, String> decorateText = s -> {
+      if (s.contains("<pre class=\"programlisting\"")) {
+        return s;
+      }
+      Matcher m = textPattern.matcher(s);
+      if (!m.matches()) {
+        return s;
+      }
+      return m.group(1) + "<span class=\"text\">" + m.group(2) + "</span>" + m.group(3);
+    };
     for (Integer key : new HashSet<>(tuple._2().keySet())) {
       String s = tuple._2().get(key);
+      s = s.lines()
+          .map(decorateText)
+          .collect(Collectors.joining("\n"));
       s =
           s.replace("=&gt;", "<span class=\"fat-arrow\">=&gt;</span>")
               .replace("::", "<span class=\"double-colon\">::</span>");
@@ -845,7 +865,7 @@ class LearningRustInTest {
                 }
               });
 
-              document.head.parentElement.style.fontSize = '20px'; // TODO remove me
+              document.head.parentElement.style.fontSize = '19px'; // TODO remove me
             </script>""");
     document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));
     document.select("p.body").forEach(p -> p.removeClass("body"));
