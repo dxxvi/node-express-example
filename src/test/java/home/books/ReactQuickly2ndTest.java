@@ -19,7 +19,8 @@ class ReactQuickly2ndTest {
   private static final Path PATH_TXT = Path.of("src/test/resources", FILENAME);
   private static final Path PATH_HTML =
       Path.of("src/test/resources", FILENAME.replace(".txt", ".html"));
-  private static final String CSS = """
+  private static final String CSS =
+      """
       .float-left { float: left }
       .clear-both { clear: both }
       .flex { display: flex }
@@ -84,32 +85,38 @@ class ReactQuickly2ndTest {
               p.addClass("float-left");
             });
 
-    document.select("p + div.orm-ChapterReader-codeSnippetContainer")
-        .forEach(div -> {
-          Element p = div.previousElementSibling();
-          if (!p.text().endsWith(":") && !p.hasClass("fm-code-listing-caption")) {
-            return;
-          }
-          List<Element> annotationElements = new ArrayList<>();
-          Element maybeAnnotation = div.nextElementSibling();
-          while (maybeAnnotation != null && maybeAnnotation.hasClass("fm-code-annotation-mob")) {
-            annotationElements.add(maybeAnnotation);
-            maybeAnnotation = maybeAnnotation.nextElementSibling();
-          }
-          Element newDiv = document.createElement("div").addClass("flex");
-          p.before(newDiv);
-          newDiv.appendChild(p);
-          newDiv.appendChild(div);
-          if (!annotationElements.isEmpty()) {
-            Element annotationDiv = document.createElement("div").addClass("annotation");
-            for (Element annotationElement : annotationElements) {
-              annotationDiv.appendChild(annotationElement);
-            }
-            newDiv.appendChild(annotationDiv);
-          }
-        });
+    document
+        .select("p + div.orm-ChapterReader-codeSnippetContainer")
+        .forEach(
+            div -> {
+              Element p = div.previousElementSibling();
+              if (!p.text().endsWith(":") && !p.hasClass("fm-code-listing-caption")) {
+                return;
+              }
+              List<Element> annotationElements = new ArrayList<>();
+              Element maybeAnnotation = div.nextElementSibling();
+              while (maybeAnnotation != null
+                  && maybeAnnotation.hasClass("fm-code-annotation-mob")) {
+                annotationElements.add(maybeAnnotation);
+                maybeAnnotation = maybeAnnotation.nextElementSibling();
+              }
+              Element newDiv = document.createElement("div").addClass("flex");
+              p.before(newDiv);
+              newDiv.appendChild(p);
+              newDiv.appendChild(div);
+              if (!annotationElements.isEmpty()) {
+                Element annotationDiv = document.createElement("div").addClass("annotation");
+                for (Element annotationElement : annotationElements) {
+                  annotationDiv.appendChild(annotationElement);
+                }
+                newDiv.appendChild(annotationDiv);
+              }
+            });
 
-    document.body().append("""
+    document
+        .body()
+        .append(
+            """
         <script>
           (function() {
             document.head.parentElement.style.fontSize = '20px';

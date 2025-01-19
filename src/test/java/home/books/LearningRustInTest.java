@@ -98,22 +98,25 @@ class LearningRustInTest {
 
     // specific for each book
     Pattern textPattern = Pattern.compile("""
-         (.*)("[a-zA-Z0-9 !]+")(.*)""");
-    Function<String, String> decorateText = s -> {
-      if (s.contains("<pre class=\"programlisting\"")) {
-        return s;
-      }
-      Matcher m = textPattern.matcher(s);
-      if (!m.matches()) {
-        return s;
-      }
-      return m.group(1) + "<span class=\"text\">" + m.group(2) + "</span>" + m.group(3);
-    };
+         (.*)("[a-zA-Z0-9. !'-_{}]+")(.*)""");
+    Function<String, String> decorateText =
+        s -> {
+          if (s.contains("<pre class=\"programlisting\"")
+              || s.contains("<span class=\"fm-combinumeral\">")) {
+            return s;
+          }
+          Matcher m = textPattern.matcher(s);
+          if (!m.matches()) {
+            return s;
+          }
+          return m.group(1) + "<span class=\"text\">" + m.group(2) + "</span>" + m.group(3);
+        };
     for (Integer key : new HashSet<>(tuple._2().keySet())) {
       String s = tuple._2().get(key);
-      s = s.lines()
-          .map(decorateText)
-          .collect(Collectors.joining("\n"));
+      s =
+          s.lines()
+              .map(decorateText) // TODO need to process derive lines too
+              .collect(Collectors.joining("\n"));
       s =
           s.replace("=&gt;", "<span class=\"fat-arrow\">=&gt;</span>")
               .replace("::", "<span class=\"double-colon\">::</span>");
