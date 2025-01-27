@@ -53,6 +53,7 @@ class LearningRustInTest {
       h1.tochead { margin-top: 4em } h1.tochead:first-child { margin-top: 0 }
       h2.fm-head + div.flex > * { margin-top: 0 }
       div.flex { display: flex; position: relative }
+      div.flex + p { margin-top: 0 }
       div > div.temp { position: absolute; top: 0; left: 0; padding: .5rem; background-color: rgba(255, 255, 255, .8); display: none }
       div.flex > pre.programlisting + p, div.flex > pre.programlisting + * + p { margin-left: 1rem }
       p + div.flex > * { margin-top: 0 }
@@ -77,6 +78,7 @@ class LearningRustInTest {
       pre.programlisting span.fat-arrow { color: #cc521d }
       pre.programlisting span.double-colon { color: #09b31a }
       pre.programlisting span.text { color: #c39 }
+      pre.programlisting span.derive { color: #2194bf }
       i.fm-italics { background-color: #ffb }
       i.fm-italics.heavy { background-color: #ff8; padding-left: .1rem; padding-right: .1rem }
       pre span.yel, p span.yel { background-color: #ff8 }
@@ -98,7 +100,8 @@ class LearningRustInTest {
 
     // specific for each book
     Pattern textPattern = Pattern.compile("""
-         (.*)("[a-zA-Z0-9. !'-_{}]+")(.*)""");
+        (.*)("[a-zA-Z0-9. !'-_{}]+")(.*)""");
+    Pattern derivePattern = Pattern.compile("#\\[derive\\([a-zA-Z ,]+\\)]");
     Function<String, String> decorateText =
         s -> {
           if (s.contains("<pre class=\"programlisting\"")
@@ -111,11 +114,24 @@ class LearningRustInTest {
           }
           return m.group(1) + "<span class=\"text\">" + m.group(2) + "</span>" + m.group(3);
         };
+    Function<String, String> decorateDerives =
+        s -> {
+          var sb = new StringBuilder();
+          var matcher = derivePattern.matcher(s);
+          while (matcher.find()) {
+            String deriveString = matcher.group();
+            String decoratedDeriveString = "<span class=\"derive\">" + deriveString + "</span>";
+            matcher.appendReplacement(sb, decoratedDeriveString);
+          }
+          matcher.appendTail(sb);
+          return sb.toString();
+        };
     for (Integer key : new HashSet<>(tuple._2().keySet())) {
       String s = tuple._2().get(key);
       s =
           s.lines()
               .map(decorateText) // TODO need to process derive lines too
+              .map(decorateDerives)
               .collect(Collectors.joining("\n"));
       s =
           s.replace("=&gt;", "<span class=\"fat-arrow\">=&gt;</span>")
