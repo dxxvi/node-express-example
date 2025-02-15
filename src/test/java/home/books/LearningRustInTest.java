@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -77,18 +78,23 @@ class LearningRustInTest {
       p.fm-head2 { font-weight: 500; color: #5d11d6}
       pre.programlisting span.fat-arrow { color: #cc521d }
       pre.programlisting span.double-colon { color: #09b31a }
-      pre.programlisting span.text { color: #c39 }
+      pre.programlisting span.text { color: #c45aa1 }
       pre.programlisting span.derive { color: #2194bf }
       i.fm-italics { background-color: #ffb }
       i.fm-italics.heavy { background-color: #ff8; padding-left: .1rem; padding-right: .1rem }
       pre span.yel, p span.yel { background-color: #ff8 }
-      pre i { color: #777 }""";
+      pre i { color: #777 }
+      div.figure { position: relative }
+      div.figure > p.figure1 + p.figurecaption {
+        position: absolute; right: 0; bottom: -1.75rem; padding: .2rem 1rem; border-radius: 9rem;
+        background: rgba(200, 200, 219, .1); font-family: sans-serif; font-style: italic;
+        font-size: .9rem; color: #555 }""";
 
   @Test
   void test() throws Throwable {
     var messageDigest = MessageDigest.getInstance("MD5");
 
-    Tuple2<String, Map<Integer, String>> tuple =
+    Tuple2<String, Map<Integer, String /*pre elements*/>> tuple =
         Utils.extractPres(Files.readString(PATH_TXT, UTF_8));
     var document = Jsoup.parse(tuple._1());
 
@@ -99,24 +105,43 @@ class LearningRustInTest {
         CSS);
 
     // specific for each book
-    Pattern textPattern = Pattern.compile("""
-        (.*)("[a-zA-Z0-9. !'-_{}]+")(.*)""");
+    Pattern textPattern = Pattern.compile("\"[a-zA-Z0-9. !'-_{}]+\"");
     Pattern derivePattern = Pattern.compile("#\\[derive\\([a-zA-Z ,]+\\)]");
+    Pattern combinumeralPattern = Pattern.compile("<span class=\"fm-combinumeral\">.</span>");
+    final String preProgrammlisting = "pre~class~programlisting";
+    final String combinumral = "span~combinumeral~";
     Function<String, String> decorateText =
         s -> {
-          if (s.contains("<pre class=\"programlisting\"")
-              || s.contains("<span class=\"fm-combinumeral\">")) {
-            return s;
+          String newText = s.replace("<pre class=\"programlisting\"", preProgrammlisting);
+          StringBuilder sb = new StringBuilder();
+          var matcher = combinumeralPattern.matcher(newText);
+          Map<String, String> combinumeralMap = new HashMap<>();
+          int combinumeralKey = 0;
+          while (matcher.find()) {
+            String key = combinumral + combinumeralKey + "~";
+            combinumeralMap.put(key, matcher.group());
+            combinumeralKey += 1;
+            matcher.appendReplacement(sb, key);
           }
-          Matcher m = textPattern.matcher(s);
-          if (!m.matches()) {
-            return s;
+          matcher.appendTail(sb);
+
+          StringBuilder sb2 = new StringBuilder();
+          matcher = textPattern.matcher(sb);
+          while (matcher.find()) {
+            String decoratedString = "<span class=\"text\">" + matcher.group() + "</span>";
+            matcher.appendReplacement(sb2, decoratedString);
           }
-          return m.group(1) + "<span class=\"text\">" + m.group(2) + "</span>" + m.group(3);
+          matcher.appendTail(sb2);
+
+          String str = sb2.toString().replace(preProgrammlisting, "<pre class=\"programlisting\"");
+          for (var e : combinumeralMap.entrySet()) {
+            str = str.replace(e.getKey(), e.getValue());
+          }
+          return str;
         };
     Function<String, String> decorateDerives =
         s -> {
-          var sb = new StringBuilder();
+          StringBuilder sb = new StringBuilder();
           var matcher = derivePattern.matcher(s);
           while (matcher.find()) {
             String deriveString = matcher.group();
@@ -130,7 +155,7 @@ class LearningRustInTest {
       String s = tuple._2().get(key);
       s =
           s.lines()
-              .map(decorateText) // TODO need to process derive lines too
+              .map(decorateText)
               .map(decorateDerives)
               .collect(Collectors.joining("\n"));
       s =
@@ -185,7 +210,8 @@ class LearningRustInTest {
 
                 var createOutputMethod = function (outputType) {
                   return function (message) {
-                    return new Sha1(true).update(message)[outputType]();
+                    return new Sha1(true).updat
+                   e(message)[outputType]();
                   };
                 };
 
@@ -665,7 +691,7 @@ class LearningRustInTest {
                 '1170150fbd861d5d4a3cbd1a1a3b9337ddf9be1e': 33,
                 '19f894b54495cf3953e7afb098cfcd38c8e458e4': 33,
                 '187bc79b50f93c88dbe1ad2b1685fe4571fbf1f1': 33,
-                '17662c84183b21e9a8a4d18f8269822ac37205a8': 27,
+                '17662c84183b21e9a8a4d18f8269822ac37205a8': 30,
                 '3b57c77e011f2c2b85558af1edd08c1ffedc8b6a': 25,
                 '89b96c890eeff7192031b5e816aaa65a468b4279': 55,
                 '44eb52991a4295a0fdb808c707c47c071bb0df05': 33,
@@ -709,7 +735,7 @@ class LearningRustInTest {
                 'd74ca697732513afc341848c871995f41765560d': 45,
                 'fb74e6f971019340351951fa6916540908b9983c': 20,
                 'fe4b37647f9ddbb440ba18c21a73201cadbe36ba': 22,
-                '2286fc57a70107e6b88f54627f7c23ae5e242fca': 9,
+                '2286fc57a70107e6b88f54627f7c23ae5e242fca': 11,
                 'd8614ba9c650f0ff9750017e5d7852e73265c10c': 27,
                 'de4565a4a0d5393c77c9c608a50b89c982e6dbd2': 27,
                 '60eac59b617edb1c60395e8b03b0f6cd98c27710': 44,
@@ -901,7 +927,7 @@ class LearningRustInTest {
                     fmCodeAnnotation); // no need to remove p as it'll be re-parented
                 if (nextP == null
                     || !nextP.hasClass("fm-code-annotation")
-                    || (!nextP.nameIs("p") && !nextP.nameIs("div"))) {
+                    || (!nextP.nameIs("p") && !nextP.nameIs("div") && !nextP.nameIs("ul"))) {
                   fmCodeAnnotation = null;
                 } else {
                   fmCodeAnnotation = nextP;

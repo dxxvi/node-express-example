@@ -23,11 +23,6 @@ import org.jsoup.nodes.Document.OutputSettings;
 public abstract class Utils {
   public static final String ALGORITHM = "AES";
 
-  /*
-    public static final Base64 BASE64 =
-        Base64.builder().setUrlSafe(true).setPadding((byte) '~').get();
-  */
-
   private Utils() {}
 
   /**
