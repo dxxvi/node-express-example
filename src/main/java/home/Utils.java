@@ -46,8 +46,10 @@ public abstract class Utils {
           }
           int id = ai.incrementAndGet();
           String htmlPiece = html.substring(i, j + PRE_END.length());
-          String placeHolder = """
-              <i id="%d"></i>""".formatted(id);
+          String placeHolder =
+              """
+              <i id="%d"></i>"""
+                  .formatted(id);
           map.put(id, htmlPiece);
           html = html.substring(0, i) + placeHolder + html.substring(j + PRE_END.length());
           continue;
@@ -112,7 +114,7 @@ public abstract class Utils {
    * Remove the width, height attributes of img
    */
   public static void addStuff(Document document, String title, String css, String baseUrl) {
-    document.head().parent().attr("style", "color: #333; font: 16px/1.44 'Noto Serif'");
+    document.head().parent().attr("style", "color: #333; font: 16px/1.44 'Noto Serif',serif");
     document.charset(UTF_8);
     document
         .head()
@@ -152,8 +154,10 @@ public abstract class Utils {
       Document document, Map<Integer, String> map, Path path) throws Throwable {
     String prettyHtml = document.toString();
     for (Map.Entry<Integer, String> entry : map.entrySet()) {
-      String placeHolder = """
-          <i id="%d"></i>""".formatted(entry.getKey());
+      String placeHolder =
+          """
+          <i id="%d"></i>"""
+              .formatted(entry.getKey());
       prettyHtml = prettyHtml.replace(placeHolder, entry.getValue());
     }
     Files.writeString(path, "<!DOCTYPE html>" + prettyHtml, CREATE, TRUNCATE_EXISTING);

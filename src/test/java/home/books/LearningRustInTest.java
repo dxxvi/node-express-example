@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
@@ -153,11 +152,7 @@ class LearningRustInTest {
         };
     for (Integer key : new HashSet<>(tuple._2().keySet())) {
       String s = tuple._2().get(key);
-      s =
-          s.lines()
-              .map(decorateText)
-              .map(decorateDerives)
-              .collect(Collectors.joining("\n"));
+      s = s.lines().map(decorateText).map(decorateDerives).collect(Collectors.joining("\n"));
       s =
           s.replace("=&gt;", "<span class=\"fat-arrow\">=&gt;</span>")
               .replace("::", "<span class=\"double-colon\">::</span>");
