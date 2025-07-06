@@ -38,15 +38,16 @@ class LearningRustInTest {
         padding: .7rem 1rem; margin-left: 1rem
       }
       code.fm-code-in-text { background: var(--pre-background); padding: .1rem .2rem }
-      pre span.fm-combinumeral { font-size: 1.4rem; line-height: 1 }
+      pre span.fm-combinumeral { font-size: 1rem; line-height: 1; font-weight: bold }
       p.fm-code-annotation { margin-top: .2rem; margin-bottom: .2rem }
+      div.fm-code-annotation { width: fit-content }
       li > p { margin-top: .2rem; margin-bottom: .2rem }
       div.orm-ChapterReader-codeSnippetContainer { display: flex }
       div.orm-ChapterReader-snippetButtonContainer { margin-top: 1rem; margin-left: 1rem }
       p + div.orm-ChapterReader-codeSnippetContainer > pre { margin-top: 0 }
       .float-left { float: left }
       .clear-both { clear: both }
-      h1, h2, h3 { font-family: 'Noto Sans' }
+      h1, h2, h3 { font-family: 'Noto Sans JP' }
       h1 { font-size: 1.67rem; font-weight: 300; color: #666 }
       h2 { font-size: 1.32rem; font-weight: 400; color: #26f }
       h3 { font-size: 1.15rem; font-weight: 400; color: #f26 }
@@ -59,7 +60,7 @@ class LearningRustInTest {
       p + div.flex > * { margin-top: 0 }
       p.fm-callout { margin-left: 3em; margin-right: 2em }
       p > span.fm-callout-head {
-        display: inline-block; padding: .1rem .5rem; font-family: 'Noto Sans', sans-serif; background-color: #afa;
+        display: inline-block; padding: .1rem .5rem; font-family: 'Noto Sans JP', sans-serif; background-color: #afa;
         font-weight: 700
       }
       div#toc { position: fixed; top: 0; right: 3rem; background-color: rgba(255, 255, 255, .9);
@@ -73,12 +74,12 @@ class LearningRustInTest {
       div#toc a.toc-2 { padding-left: 1rem }
       div#toc a.toc-3 { padding-left: 2rem }
       div#toc a.toc-4 { padding-left: 3rem }
-      span.fm-combinumeral { font-size: 120% }
       p.fm-head2 { font-weight: 500; color: #5d11d6}
       pre.programlisting span.fat-arrow { color: #cc521d }
       pre.programlisting span.double-colon { color: #09b31a }
       pre.programlisting span.text { color: #c45aa1 }
       pre.programlisting span.derive { color: #2194bf }
+      pre.programlisting span.comment { opacity: .5; font-style: italic }
       i.fm-italics { background-color: #ffb }
       i.fm-italics.heavy { background-color: #ff8; padding-left: .1rem; padding-right: .1rem }
       pre span.yel, p span.yel { background-color: #ff8 }
@@ -87,7 +88,8 @@ class LearningRustInTest {
       div.figure > p.figure1 + p.figurecaption {
         position: absolute; right: 0; bottom: -1.75rem; padding: .2rem 1rem; border-radius: 9rem;
         background: rgba(200, 200, 219, .1); font-family: sans-serif; font-style: italic;
-        font-size: .9rem; color: #555 }""";
+        font-size: .9rem; color: #555 }
+      span.fm-combinumeral { font-family: "Noto Serif JP",serif; font-weight: bold }""";
 
   @Test
   void test() throws Throwable {
@@ -104,14 +106,31 @@ class LearningRustInTest {
         CSS);
 
     // specific for each book
-    Pattern textPattern = Pattern.compile("\"[a-zA-Z0-9. !'-_{}]+\"");
+    Pattern textPattern = Pattern.compile("\".*?\"");
     Pattern derivePattern = Pattern.compile("#\\[derive\\([a-zA-Z ,]+\\)]");
     Pattern combinumeralPattern = Pattern.compile("<span class=\"fm-combinumeral\">.</span>");
+    Pattern simpleCommentPattern = Pattern.compile("// [a-zA-Z0-9 :_',.?()]+$");
+    ;
     final String preProgrammlisting = "pre~class~programlisting";
     final String combinumral = "span~combinumeral~";
+    final String dollarSign = "d0llarS1gn";
+    final Set<String> notouchTexts =
+        Set.of(
+            "<span class=\"segoe\">",
+            "<span class=\"segoeh\">",
+            "<span class=\"mincho\">",
+            "<span class=\"batang\">",
+            "<span class=\"fm-code-continuation-arrow\">",
+            "<span class=\"malgun\">",
+            "<span class=\"gothic\">");
     Function<String, String> decorateText =
         s -> {
-          String newText = s.replace("<pre class=\"programlisting\"", preProgrammlisting);
+          if (notouchTexts.stream().anyMatch(s::contains)) {
+            return s; // this line is too complicated
+          }
+          String newText =
+              s.replace("<pre class=\"programlisting\"", preProgrammlisting)
+                  .replace("$", dollarSign);
           StringBuilder sb = new StringBuilder();
           var matcher = combinumeralPattern.matcher(newText);
           Map<String, String> combinumeralMap = new HashMap<>();
@@ -132,11 +151,19 @@ class LearningRustInTest {
           }
           matcher.appendTail(sb2);
 
-          String str = sb2.toString().replace(preProgrammlisting, "<pre class=\"programlisting\"");
+          StringBuilder sb3 = new StringBuilder();
+          matcher = simpleCommentPattern.matcher(sb2);
+          while (matcher.find()) {
+            String decoratedString = "<span class=\"comment\">" + matcher.group() + "</span>";
+            matcher.appendReplacement(sb3, decoratedString);
+          }
+          matcher.appendTail(sb3);
+
+          String str = sb3.toString().replace(preProgrammlisting, "<pre class=\"programlisting\"");
           for (var e : combinumeralMap.entrySet()) {
             str = str.replace(e.getKey(), e.getValue());
           }
-          return str;
+          return str.replace(dollarSign, "$");
         };
     Function<String, String> decorateDerives =
         s -> {
@@ -151,12 +178,12 @@ class LearningRustInTest {
           return sb.toString();
         };
     for (Integer key : new HashSet<>(tuple._2().keySet())) {
-      String s = tuple._2().get(key);
+      String s = tuple._2().get(key).replace("</pre>", "");
       s = s.lines().map(decorateText).map(decorateDerives).collect(Collectors.joining("\n"));
       s =
           s.replace("=&gt;", "<span class=\"fat-arrow\">=&gt;</span>")
               .replace("::", "<span class=\"double-colon\">::</span>");
-      tuple._2().put(key, s);
+      tuple._2().put(key, s + "</pre>");
     }
 
     document
@@ -205,8 +232,7 @@ class LearningRustInTest {
 
                 var createOutputMethod = function (outputType) {
                   return function (message) {
-                    return new Sha1(true).updat
-                   e(message)[outputType]();
+                    return new Sha1(true).update(message)[outputType]();
                   };
                 };
 
@@ -498,6 +524,7 @@ class LearningRustInTest {
                 '72a7c6d3b4a086d0651e4027f1734b41b4cdc18c': 35,
                 'e12f38393044d25483bee2f11bb4c84d9c7f5863': 35,
                 '92f036afe6192372f8db8921564a3e9e1562472d': 35,
+                'bc169885837ee4d7d4ae26651aa362686066ff6c': 19,
                 'c9e1ba645e5ed1068a9d0da62d7e67e682e4001b': 35,
                 'f7dcf95b40662fa58c0b04da8cda579e36b3360b': 65,
                 'f3b446feeffa308b84bab5f73a3a2804387328d3': 37,
@@ -510,16 +537,22 @@ class LearningRustInTest {
                 '44915d7a1008253e17da6a55770b695447f68a70': 35,
                 '153fb4f00a181032656bae756603b45bccd9ae2d': 35,
                 '94a2a825abfc8329e767cde834a92a275c9bd0e5': 35,
+                '3de105dc3f903efe95d5204a3c6ad63d2457f33b': 19,
                 '6ac913f77e07298eeb899d79e554ee7b1754cc46': 35,
                 'dee6a429c3cc451c360b9d0ed097355ba016af96': 35,
                 '06470cd74433e706f0fb8b1a7a627522f3e4b077': 35,
                 'cb56007f7f9244d9476750f13e0beb84cee17685': 56,
+                '792ea3afde5a5efaf6489d38fe41180ae8b4efe4': 37,
+                '535734bc61c74ab18d5cdb6611290174624bba78': 12,
+                '305655d9da13536f1af74db16b1d59f63ed42e35': 24,
+                'bff0530656372f318a8c6b795024d3b5a6032bb5': 31,
                 'ebce03817aa98dcea1f8a51567d525d610830ff5': 36,
                 'a59c98d0ff41ec3e62d9668cf0b8979b39f707c9': 45,
                 'aff31a3d94477a7eb56b558f04a139fb9fec6e40': 28,
-                '9b7dd0232d172ec0817b158ab59df1bca3083753': 17,
+                'bf1ac9508525e173cbc1d91a77679a2d5160931e': 10,
+                '44b32687f7fe45b2c250c260ccfd6d0144684b9e': 19,
                 'e6c0b237860ec54c201e22311e49330fb592be92': 45,
-                'f6052396054299d623db3cc65ad1e3068a9a4676': 45,
+                'f6052396054299d623db3cc65ad1e3068a9a4676': 31,
                 '2773b2bc7e00a599b13766cde8f405acf2fecae6': 45,
                 '0aa494d4ac1c88f46ee435273f30cffedf714d02': 25,
                 'ad4a1e49a7005edd71376c48c2eccb492e879769': 35,
@@ -528,7 +561,8 @@ class LearningRustInTest {
                 '7dd9fed95fd7a07ab1544d2463b39520bb498f9b': 35,
                 '56b1313b8763aca42e290784db3765b97d9e40b8': 35,
                 '270149576de1525c3158176add2bb214933ed3f9': 35,
-                'b799ff8f79556aba45355887a358935d767109e3': 35,
+                'b799ff8f79556aba45355887a358935d767109e3': 25,
+                '8a9f832b1f7906f1f4eebc2d4d358ce66b42cbef': 19,
                 '752f7883b88899e6939f29d3e1bf581a10213605': 35,
                 'f6aa85805b3be611e9c092448cf0171aa844dce8': 35,
                 '6c59b45b60997aa16c2db1105cc18d2472c98fbd': 56,
@@ -580,7 +614,8 @@ class LearningRustInTest {
                 '91ffbb9c386d146a4de73dbb1f8fc9c0380fa8a0': 55,
                 'b08e401345915bd3f76315d62187fff5e4f65d69': 27,
                 'f0f6585193dd39f8e1e66e54b5a03dbd84ad0dc4': 44,
-                '9b6734c689ec729258fc6705af1fcd4bdab9b903': 44,
+                '9b6734c689ec729258fc6705af1fcd4bdab9b903': 19,
+                'dff0c2e517c64bed3efef3a89a193e601ec6d9e4': 19,
                 'e07efe3210d3dba5013243e7aaede828af7aff77': 44,
                 '077a34e7155027299b62205fc01ab051e482a9bf': 35,
                 'd5f07508884e768070b781c5d7454aace2d831d6': 55,
@@ -905,9 +940,8 @@ class LearningRustInTest {
                 }
               });
 
-              document.head.parentElement.style.fontSize = '19px'; // TODO remove me
+              document.head.parentElement.style.fontSize = '20px'; // TODO remove me
             </script>""");
-    document.select(".calibre5").forEach(el -> el.removeClass("calibre5"));
     document.select("p.body").forEach(p -> p.removeClass("body"));
     document // move the code annotation section to the right of the code
         .select("div.orm-ChapterReader-codeSnippetContainer + .fm-code-annotation")
