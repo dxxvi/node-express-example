@@ -68,23 +68,23 @@ public abstract class Utils {
         .head()
         .append(
             """
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap"
-              rel="stylesheet">""")
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Noto+Sans+JP:wght@100..900&family=Noto+Serif+JP:wght@200..900&display=swap"
+                      rel="stylesheet">""")
         .append(
             """
         <style>
-          // font-weight: Use a value from 100 to 900
+          // font-weight: Use a value from 200 to 900
           .noto-serif {
-            font-family: "Noto Serif", serif;
+            font-family: "Noto Serif JP", serif;
             font-optical-sizing: auto;
             font-style: normal;
             font-variation-settings: "wdth" 100;
           }
           // font-weight: Use a value from 100 to 900
           .noto-sans {
-            font-family: "Noto Sans", sans-serif;
+            font-family: "Noto Sans JP", sans-serif;
             font-optical-sizing: auto;
             font-style: normal;
             font-variation-settings: "wdth" 100;
@@ -114,7 +114,7 @@ public abstract class Utils {
    * Remove the width, height attributes of img
    */
   public static void addStuff(Document document, String title, String css, String baseUrl) {
-    document.head().parent().attr("style", "color: #333; font: 16px/1.44 'Noto Serif',serif");
+    document.head().parent().attr("style", "color: #333; font: 16px/1.44 'Noto Serif JP',serif");
     document.charset(UTF_8);
     document
         .head()
